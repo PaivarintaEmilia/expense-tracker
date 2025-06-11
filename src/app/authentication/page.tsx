@@ -1,30 +1,46 @@
 "use client";
 import React, { useState } from 'react';
-import { SupabaseClient } from '@supabase/supabase-js';
+import supabase from '../../../supabase/client';
 
 export default function Login() {
     const [email, setEmail] = useState('');
+    const [error, setError] = useState<string | null>(null);
 
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleEmailRegistration = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Handle login logic here
+
         console.log('Email:', email);
+
+        try {
+            let { data, error } = await supabase.auth.signInWithOtp({
+                email: email,
+            })
+
+            if (error) {
+                setError(error.message);
+            } else  {
+                console.log('Registration successful:', data);
+                // Add here navigation to the home-page
+            }
+        } catch (error) {
+            console.log("Error during registration: ", error);
+            setError("There was a error during the registration.")
+        };
+    
     };
 
     /* Button to change to registering an account*/
     function handleCLick() {
         return;
-
     };
 
     return (
         <div className="login-container">
 
             <h1>Create an account</h1>
-
        
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleEmailRegistration}>
                 <div>
                     <label htmlFor="email">Email:</label>
                     <input
@@ -37,6 +53,9 @@ export default function Login() {
                 </div>
                 <button type="submit">Register</button>
                 <button type="button" onClick={handleCLick}>Sign In</button>
+
+                {/* Show error message */}
+                <h2>{error}</h2>
             </form>
         </div>
     );
