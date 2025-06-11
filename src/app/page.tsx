@@ -28,7 +28,7 @@ export default function Home() {
         </ol>
 
        { /* Links to the created pages while developing */ }
-       <Link href="/app/authentication/login">LOGIN</Link>
+      <Link href="/authentication">Login</Link>
         
   
 
