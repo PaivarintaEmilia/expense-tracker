@@ -11,6 +11,7 @@ export default function Login() {
         e.preventDefault();
 
         console.log('Email:', email);
+        setError("BUTTON PRESSED");
 
         try {
             let { data, error } = await supabase.auth.signInWithOtp({
@@ -19,7 +20,7 @@ export default function Login() {
 
             if (error) {
                 setError(error.message);
-            } else  {
+            } else {
                 console.log('Registration successful:', data);
                 // Add here navigation to the home-page
             }
@@ -27,7 +28,7 @@ export default function Login() {
             console.log("Error during registration: ", error);
             setError("There was a error during the registration.")
         };
-    
+
     };
 
     /* Button to change to registering an account*/
@@ -39,9 +40,8 @@ export default function Login() {
         <div className="login-container">
 
             <h1>Create an account</h1>
-       
+
             <form onSubmit={handleEmailRegistration}>
-                <div>
                     <label htmlFor="email">Email:</label>
                     <input
                         type="email"
@@ -50,13 +50,12 @@ export default function Login() {
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
-                </div>
                 <button type="submit">Register</button>
-                <button type="button" onClick={handleCLick}>Sign In</button>
-
-                {/* Show error message */}
-                <h2>{error}</h2>
             </form>
+            <button type="button" onClick={handleCLick}>Sign In</button>
+            {/* Show error message */}
+            <h2>{error}</h2>
+
         </div>
     );
 };
