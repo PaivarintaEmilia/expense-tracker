@@ -29,6 +29,7 @@ export default function Home() {
 
        { /* Links to the created pages while developing */ }
       <Link href="/authentication">Login</Link>
+      <Link href="/home">Home</Link>
         
   
 
