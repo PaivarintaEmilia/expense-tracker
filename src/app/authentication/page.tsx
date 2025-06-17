@@ -14,7 +14,7 @@ export default function Login() {
         setError("BUTTON PRESSED");
 
         try {
-            let { data, error } = await supabase.auth.signInWithOtp({
+            const { data, error } = await supabase.auth.signInWithOtp({
                 email: email,
             })
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import { NextResponse } from 'next/server';
 import supabase from '../../../../supabase/client';
 
@@ -8,7 +7,7 @@ import supabase from '../../../../supabase/client';
 export async function GET() {
 
 
-    let { data: income, error } = await supabase
+    const { data: income, error } = await supabase
         .from('income')
         .select('income_amount')
 
