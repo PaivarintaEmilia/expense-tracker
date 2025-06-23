@@ -1,42 +1,35 @@
-"use client";
-import React, { useState, useEffect } from 'react';
+'use client'
+import React, { useState, useEffect } from 'react'
+import { getIncome } from '@/lib/income'
 
 /* Type */
 type IncomeAmount = {
-    income_amount: number;
+    income_amount: number
 }
 
 export default function Home() {
 
-    const [amount, setAmount] = useState<IncomeAmount[]>([]);
+    const [amount, setAmount] = useState<IncomeAmount[]>([])
 
     useEffect(() => {
         async function fetchIncome() {
-            try {
-                const res = await fetch('api/income');
-                const data = await res.json();
-                setAmount(data);
-            } catch (error) {
-                console.error('Error while catching data', error);
-            }
+            const amountData = await getIncome()
+            console.log("getIncomeData: ", amountData)
+            setAmount(amountData)
         }
+        fetchIncome()
+    }, [])
 
-        fetchIncome();
-    }, []);
-
-    console.log(amount);
+    console.log("2. Amount: ", amount)
 
     return (
-        <div>
+        <div className="">
             <h1>test</h1>
-            
             <ul>
                 {amount.map((item, index) =>(
                     <li key={index}>{item.income_amount}</li>
                 ))}
             </ul>
-
-
         </div>
-    );
-};
+    )
+}

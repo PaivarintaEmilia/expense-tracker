@@ -1,17 +1,17 @@
-"use client";
-import React, { useState } from 'react';
-import supabase from '../../../supabase/client';
+'use client'
+import React, { useState } from 'react'
+import supabase from '@lib/supabase'
 
 export default function Login() {
-    const [email, setEmail] = useState('');
-    const [error, setError] = useState<string | null>(null);
+    const [email, setEmail] = useState('')
+    const [error, setError] = useState<string | null>(null)
 
 
     const handleEmailRegistration = async (e: React.FormEvent) => {
-        e.preventDefault();
+        e.preventDefault()
 
-        console.log('Email:', email);
-        setError("BUTTON PRESSED");
+        console.log('Email:', email)
+        setError('BUTTON PRESSED')
 
         try {
             const { data, error } = await supabase.auth.signInWithOtp({
@@ -19,25 +19,25 @@ export default function Login() {
             })
 
             if (error) {
-                setError(error.message);
+                setError(error.message)
             } else {
-                console.log('Registration successful:', data);
+                console.log('Registration successful:', data)
                 // Add here navigation to the home-page
             }
         } catch (error) {
-            console.log("Error during registration: ", error);
-            setError("There was a error during the registration.")
-        };
+            console.log('Error during registration: ', error)
+            setError('There was a error during the registration.')
+        }
 
-    };
+    }
 
     /* Button to change to registering an account*/
     function handleCLick() {
-        return;
-    };
+        return
+    }
 
     return (
-        <div className="login-container">
+        <div>
 
             <h1>Create an account</h1>
 
@@ -57,5 +57,5 @@ export default function Login() {
             <h2>{error}</h2>
 
         </div>
-    );
-};
+    )
+}

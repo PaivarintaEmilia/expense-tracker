@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
-import supabase from '../../../../supabase/client';
+import { NextResponse } from 'next/server'
+import supabase from '@lib/supabase'
 
 
 
@@ -14,8 +14,8 @@ export async function GET() {
     //console.log(income);
 
     if (error) {
-        return console.log(error);
+        return console.log(error)
     }
 
-    return NextResponse.json(income);
-};
+    return NextResponse.json(income)
+}
