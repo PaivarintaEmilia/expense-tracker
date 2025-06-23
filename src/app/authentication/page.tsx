@@ -1,10 +1,13 @@
 'use client'
 import React, { useState } from 'react'
 import supabase from '@lib/supabase'
+import { useRouter } from 'next/navigation'
 
 export default function Login() {
     const [email, setEmail] = useState('')
     const [error, setError] = useState<string | null>(null)
+
+    const router = useRouter()
 
 
     const handleEmailRegistration = async (e: React.FormEvent) => {
@@ -22,7 +25,7 @@ export default function Login() {
                 setError(error.message)
             } else {
                 console.log('Registration successful:', data)
-                // Add here navigation to the home-page
+                router.push('home') // This might not be needed as the redirect link is determinated in Supabase
             }
         } catch (error) {
             console.log('Error during registration: ', error)
@@ -31,10 +34,14 @@ export default function Login() {
 
     }
 
-    /* Button to change to registering an account*/
-    function handleCLick() {
-        return
+
+    const checkSession = async () => {
+        const { data: {session}, error } = await supabase.auth.getSession()
+        console.log('Session from checkSession', session)
+        return session
     }
+
+    
 
     return (
         <div>
@@ -52,7 +59,6 @@ export default function Login() {
                     />
                 <button type="submit">Register</button>
             </form>
-            <button type="button" onClick={handleCLick}>Sign In</button>
             {/* Show error message */}
             <h2>{error}</h2>
 
