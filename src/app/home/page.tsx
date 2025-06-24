@@ -1,6 +1,8 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import { getIncome } from '@/lib/income'
+import session from '@hooks/session'
+
 
 /* Type */
 type IncomeAmount = {
@@ -8,6 +10,7 @@ type IncomeAmount = {
 }
 
 export default function Home() {
+    session()
 
     const [amount, setAmount] = useState<IncomeAmount[]>([])
 

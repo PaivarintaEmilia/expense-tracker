@@ -2,8 +2,12 @@
 import React, { useState } from 'react'
 import supabase from '@lib/supabase'
 import { useRouter } from 'next/navigation'
+import session from '@hooks/session'
+
 
 export default function Login() {
+    session()
+
     const [email, setEmail] = useState('')
     const [error, setError] = useState<string | null>(null)
 
@@ -33,14 +37,6 @@ export default function Login() {
         }
 
     }
-
-
-    const checkSession = async () => {
-        const { data: {session}, error } = await supabase.auth.getSession()
-        console.log('Session from checkSession', session)
-        return session
-    }
-
     
 
     return (
@@ -57,7 +53,7 @@ export default function Login() {
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
-                <button type="submit">Register</button>
+                <button type="submit">Send Magic Link</button>
             </form>
             {/* Show error message */}
             <h2>{error}</h2>

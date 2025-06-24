@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import '@/app/globals.css'
 import Header from '@components/Header'
-import session from '@hooks/session'
 
 
 const geistSans = Geist({
@@ -26,7 +25,6 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   
-  session()
 
   return (
     <html lang="en">
