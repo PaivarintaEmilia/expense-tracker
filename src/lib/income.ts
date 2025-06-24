@@ -1,5 +1,7 @@
 import supabase from '@lib/supabase'
 
+
+/* Get Income_amount from Income-table */
 export const getIncome = async () => {
     const { data: income, error } = await supabase
         .from('income')
@@ -12,8 +14,17 @@ export const getIncome = async () => {
     return income
 }
 
-export const createIncome = async (amount: any) => {
-    const { data: income, error } = await supabase.from('income').insert(amount)
+
+/** Create Income */
+export const createIncome = async (user_id: UUID, income_amount: number, income_created_at: Date) => {
+
+    const { data: income, error } = await supabase
+        .from('income')
+        .insert([
+            { user_id: 'someValue', income_amount: 'otherValue', income_created_at: 'otherValue' },
+        ])
+        .select()
+
     return income
 }
 

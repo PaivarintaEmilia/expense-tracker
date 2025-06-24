@@ -7,9 +7,10 @@ export default function session() {
   const router = useRouter()
   const pathname = usePathname()
 
-  console.error('Session called')
-
   useEffect(() => {
+
+    console.error('Session called')
+
     const checkAuth = async () => {
       const { data: { session }, error } = await supabase.auth.getSession()
       
