@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 
 type IncomeData = {
-    onSubmit: () => {},
+    onSubmit: (e: React.FormEvent<HTMLFormElement>) => {},
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
     value: number, 
 

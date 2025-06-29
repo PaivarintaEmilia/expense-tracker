@@ -33,11 +33,19 @@ export default function Home() {
 
         const { data: { user } } = await supabase.auth.getUser()
         console.log('User ID: ', user?.id)
+
+        // Check if the user is underfined becuause getUser returns string or undefined
+        if (!user || !user.id) {
+            throw new Error('User is not authenticated')
+        }
+
         const userId = user?.id
 
         const date = new Date();
 
         createIncome(userId, income, date)
+
+        setIncome(0)
 
 
 
@@ -59,7 +67,7 @@ export default function Home() {
             {/** Create Income */}
             <AddDataFOrm
                 onSubmit={handleSubmit}
-                onChange={(e) => setIncome(e.target.value)}
+                onChange={(e) => setIncome(Number(e.target.value))}
                 value={income}
             />
 
