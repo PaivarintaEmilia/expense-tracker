@@ -43,6 +43,10 @@ export default function Home() {
 
         const date = new Date();
 
+        console.log('userId: ', userId)
+        console.log('Income: ', income)
+        console.log('Date: ', date)
+
         createIncome(userId, income, date)
 
         setIncome(0)
@@ -52,6 +56,8 @@ export default function Home() {
 
 
     }
+
+    
 
 
 
