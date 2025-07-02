@@ -4,13 +4,15 @@ import Link from 'next/link'
 
 type IncomeData = {
     onSubmit: (e: React.FormEvent<HTMLFormElement>) => {},
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    value: number, 
+    amountOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
+    descriptionOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
+    amount: number, 
+    description: string,
 
 }
 
 
-export default function AddDataForm({onSubmit, onChange, value}:IncomeData) {
+export default function AddDataForm({onSubmit, amountOnChange, descriptionOnChange, amount, description}:IncomeData) {
     return (
         <div className="">
             <form onSubmit={onSubmit}>
@@ -18,9 +20,16 @@ export default function AddDataForm({onSubmit, onChange, value}:IncomeData) {
                 <input
                     type="number"
                     id="incomeAmount"
-                    value={value}
-                    onChange={onChange}
+                    value={amount}
+                    onChange={amountOnChange}
                     required
+                />
+                <label htmlFor="email">Income description:</label>
+                <input
+                    type="text"
+                    id="incomeDescription"
+                    value={description}
+                    onChange={descriptionOnChange}
                 />
                 <button type="submit">Add Income</button>
             </form>
