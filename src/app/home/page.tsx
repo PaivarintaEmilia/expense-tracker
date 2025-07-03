@@ -26,13 +26,17 @@ export default function Home() {
     const [showPopup, setShowPopup] = useState<boolean>(false) // To activate and deactivate the popUp
     const [selectedId, setSelectedId] = useState<string | null>(null) // To get the id of the item that is passed to deleteIncome-function
 
+
+    /** Function to update the list */
+
+    const refershIncomeList = async () => {
+        const updatedData = await getIncome() 
+        console.log("getIncomeData: ", updatedData)
+        setAmount(updatedData)
+    }
+
     useEffect(() => {
-        async function fetchIncome() {
-            const incomeData = await getIncome()
-            console.log("getIncomeData: ", incomeData)
-            setAmount(incomeData)
-        }
-        fetchIncome()
+        refershIncomeList()
     }, [])
 
     /* Creat new Income*/
@@ -58,8 +62,7 @@ export default function Home() {
 
         createIncome(userId, income, date, description)
 
-        const updatedData = await getIncome() //  Update the listed income data shown on the page
-        setAmount(updatedData)
+        refershIncomeList()
 
         setIncome(0)
 
@@ -75,7 +78,7 @@ export default function Home() {
                         onMouseEnter={() => setHoveredId(item.income_id)}
                         onMouseLeave={() => setHoveredId(null)}
                     >
-                        {item.income_amount}
+                        {item.income_amount}{item.income_description}
 
                         {hoveredId === item.income_id && (
                             <button
@@ -98,37 +101,37 @@ export default function Home() {
                 description={description}
             />
 
+            {/* Popup */}
+
+            {/* When showPopup is true and selectedId is set --> show the popup*/}
+            {
+                showPopup && selectedId && (
+                    <div>
+                        <p>Do you want to delete the item {selectedId}?</p>
+                        <div>
+                            <button
+                                onClick={() => {
+                                    deleteIncome(selectedId)
+                                    refershIncomeList()
+                                    console.log('Income item deleted')
+                                    setShowPopup(false)
+                                    setSelectedId(null)
+                                }}
+                            >Yes</button>
+                            <button
+                                onClick={() => {
+                                    setShowPopup(false)
+                                    setSelectedId(null)
+                                }}
+                            >Cancel</button>
+                        </div>
+                    </div>
+                )
+            }
+
 
         </div>
     )
-
-    /* Popup */
-
-    // When showPopup is true and selectedId is set --> show the popup
-    {
-        showPopup && selectedId && (
-            <div>
-                <p>Do you want to delete the item {selectedId}?</p>
-                <div>
-                    <button
-                        onClick={() => {
-                            deleteIncome(selectedId)
-                            console.log('Income item deleted')
-                            setShowPopup(false)
-                            setSelectedId(null)
-                        }}
-                    >Yes</button>
-                    <button
-                        onClick={() => {
-                            setShowPopup(false)
-                            setSelectedId(null)
-                        }}
-                    >Cancel</button>
-                </div>
-            </div>
-        )
-    }
-
 }
 
 
