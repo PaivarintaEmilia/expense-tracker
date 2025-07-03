@@ -5,13 +5,13 @@ type IncomeData = {
     onSubmit: (e: React.FormEvent<HTMLFormElement>) => {},
     amountOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
     descriptionOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
+    cancelFunction: () => {},
     amount: number, 
     description: string,
-
 }
 
 
-export default function AddDataForm({onSubmit, amountOnChange, descriptionOnChange, amount, description}:IncomeData) {
+export default function UpdateDataForm({onSubmit, amountOnChange, descriptionOnChange, cancelFunction, amount, description}:IncomeData) {
     return (
         <div className="">
             <form onSubmit={onSubmit}>
@@ -30,7 +30,8 @@ export default function AddDataForm({onSubmit, amountOnChange, descriptionOnChan
                     value={description}
                     onChange={descriptionOnChange}
                 />
-                <button type="submit">Add Income</button>
+                <button type="submit">Update</button>
+                <button type="button" onClick={cancelFunction}>Cancel</button>
             </form>
         </div>
     )

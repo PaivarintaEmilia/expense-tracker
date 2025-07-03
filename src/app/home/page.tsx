@@ -1,9 +1,10 @@
 'use client'
 import React, { useState, useEffect } from 'react'
-import { getIncome, createIncome, deleteIncome } from '@/lib/income'
+import { getIncome, createIncome, updateIncome, deleteIncome } from '@/lib/income'
 import session from '@hooks/session'
-import AddDataFOrm from '@components/AddDataForm'
+import AddDataForm from '@components/AddDataForm'
 import supabase from '@/lib/supabase'
+import UpdateDataForm from '@components/UpdateDataForm'
 
 
 /* Type */
@@ -26,17 +27,17 @@ export default function Home() {
     const [showPopup, setShowPopup] = useState<boolean>(false) // To activate and deactivate the popUp
     const [selectedId, setSelectedId] = useState<string | null>(null) // To get the id of the item that is passed to deleteIncome-function
 
+    /** State to tell if Popup should show Delete- or Update-functionality */
+    const [popupState, setPopupState] = useState<'delete' | 'update' | null>(null);
 
-    /** Function to update the list */
-
-    const refershIncomeList = async () => {
-        const updatedData = await getIncome() 
+    const refreshIncomeList = async () => {
+        const updatedData = await getIncome()
         console.log("getIncomeData: ", updatedData)
         setAmount(updatedData)
     }
 
     useEffect(() => {
-        refershIncomeList()
+        refreshIncomeList()
     }, [])
 
     /* Creat new Income*/
@@ -62,9 +63,16 @@ export default function Home() {
 
         createIncome(userId, income, date, description)
 
-        refershIncomeList()
+        refreshIncomeList()
 
         setIncome(0)
+
+    }
+
+    /** Update Income */
+    const updateIncome = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+
 
     }
 
@@ -81,19 +89,33 @@ export default function Home() {
                         {item.income_amount}{item.income_description}
 
                         {hoveredId === item.income_id && (
-                            <button
-                                onClick={() => {
-                                    setSelectedId(item.income_id)
-                                    setShowPopup(true)
-                                }}
-                            >Delete</button>
+                            <div>
+                                <button
+                                    onClick={() => {
+                                        setSelectedId(item.income_id)
+                                        setShowPopup(true)
+                                        setPopupState('delete')
+                                    }}
+                                >Delete</button>
+
+                                <button
+                                    onClick={() => {
+                                        setSelectedId(item.income_id)
+                                        setShowPopup(true)
+                                        setPopupState('update')
+                                        setIncome(item.income_amount)
+                                        setDescription(item.income_description)
+                                    }}
+                                >Update</button>
+                            </div>
+
                         )}
                     </li>
                 ))}
             </ul>
 
             {/** Create Income */}
-            <AddDataFOrm
+            <AddDataForm
                 onSubmit={handleSubmit}
                 amountOnChange={(e) => setIncome(Number(e.target.value))}
                 descriptionOnChange={(e) => setDescription(e.target.value)}
@@ -106,27 +128,55 @@ export default function Home() {
             {/* When showPopup is true and selectedId is set --> show the popup*/}
             {
                 showPopup && selectedId && (
-                    <div>
-                        <p>Do you want to delete the item {selectedId}?</p>
+
+                    // Functionality to delete income item
+                    { popupState === 'delete' && (
                         <div>
-                            <button
-                                onClick={() => {
-                                    deleteIncome(selectedId)
-                                    refershIncomeList()
-                                    console.log('Income item deleted')
-                                    setShowPopup(false)
-                                    setSelectedId(null)
-                                }}
-                            >Yes</button>
-                            <button
-                                onClick={() => {
-                                    setShowPopup(false)
-                                    setSelectedId(null)
-                                }}
-                            >Cancel</button>
+                            <p>Do you want to delete the item {selectedId}?</p>
+                            <div>
+                                <button
+                                    onClick={() => {
+                                        deleteIncome(selectedId)
+                                        refreshIncomeList()
+                                        console.log('Income item deleted')
+                                        setShowPopup(false)
+                                        setSelectedId(null)
+                                    }}
+                                >Yes</button>
+                                <button
+                                    onClick={() => {
+                                        setShowPopup(false)
+                                        setSelectedId(null)
+                                    }}
+                                >Cancel</button>
+                            </div>
                         </div>
-                    </div>
-                )
+
+                    )}
+
+
+                    // Functionality to Update income item
+
+            {popupState === 'update' && (
+                <UpdateDataForm
+                    onSubmit={function (e: React.FormEvent<HTMLFormElement>): {} {
+                        throw new Error('Function not implemented.')
+                    }}
+                    amountOnChange={(e) => setIncome(Number(e.target.value))}
+                    descriptionOnChange={(e) => setDescription(e.target.value)}
+                    cancelFunction={() => {
+                        setShowPopup(false)
+                        setSelectedId(null)
+                        setPopupState(null)
+                    }}
+                    amount={0}
+                    description={''}
+                    // Should we also add IncomeId here?
+                    >
+
+                </UpdateDataForm>
+            )}
+            )
             }
 
 
