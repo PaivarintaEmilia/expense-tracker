@@ -36,11 +36,11 @@ export const createIncome = async (user_id: string, income_amount: number, incom
 }
 
 /** Update income */
-export const updateIncome = async (income_id: string | null, income_amount: number, income_description: string) => {
+export const updateIncome = async (income_id: number, income_amount: number, income_description: string) => {
 
     const { data: income, error } = await supabase
         .from('incomes')
-        .update({ income_amount: 'income_amount', income_description: 'income_description' })
+        .update({ income_amount, income_description  })
         .eq('income_id', income_id)
         .select()
 
@@ -48,7 +48,9 @@ export const updateIncome = async (income_id: string | null, income_amount: numb
         console.log("Error while updating Income item: ", error)
     }
 
-    return income
+    console.log('Updated income data: ', income)
+
+    return "income, updated"
 
 }
 

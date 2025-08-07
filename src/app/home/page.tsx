@@ -70,10 +70,10 @@ export default function Home() {
     }
 
     /** Update Income */
-    const updateIncome = async (e: React.FormEvent<HTMLFormElement>) => {
+    const updateIncomeF = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-
+        updateIncome(Number(selectedId), income, description)
     }
 
     return (
@@ -126,42 +126,34 @@ export default function Home() {
             {/* Popup */}
 
             {/* When showPopup is true and selectedId is set --> show the popup*/}
-            {
-                showPopup && selectedId && (
+            {showPopup && selectedId && popupState === 'delete' && (
+                <div>
+                    <p>Do you want to delete the item {selectedId}?</p>
+                    <div>
+                        <button
+                            onClick={() => {
+                                deleteIncome(selectedId)
+                                refreshIncomeList()
+                                console.log('Income item deleted')
+                                setShowPopup(false)
+                                setSelectedId(null)
+                            }}
+                        >Yes</button>
+                        <button
+                            onClick={() => {
+                                setShowPopup(false)
+                                setSelectedId(null)
+                            }}
+                        >Cancel</button>
+                    </div>
+                </div>
 
-                    // Functionality to delete income item
-                    { popupState === 'delete' && (
-                        <div>
-                            <p>Do you want to delete the item {selectedId}?</p>
-                            <div>
-                                <button
-                                    onClick={() => {
-                                        deleteIncome(selectedId)
-                                        refreshIncomeList()
-                                        console.log('Income item deleted')
-                                        setShowPopup(false)
-                                        setSelectedId(null)
-                                    }}
-                                >Yes</button>
-                                <button
-                                    onClick={() => {
-                                        setShowPopup(false)
-                                        setSelectedId(null)
-                                    }}
-                                >Cancel</button>
-                            </div>
-                        </div>
+            )}
 
-                    )}
-
-
-                    // Functionality to Update income item
-
-            {popupState === 'update' && (
+            {showPopup && selectedId && popupState === 'delete' && (
                 <UpdateDataForm
-                    onSubmit={function (e: React.FormEvent<HTMLFormElement>): {} {
-                        throw new Error('Function not implemented.')
-                    }}
+
+                    onSubmit={updateIncomeF}
                     amountOnChange={(e) => setIncome(Number(e.target.value))}
                     descriptionOnChange={(e) => setDescription(e.target.value)}
                     cancelFunction={() => {
@@ -169,15 +161,12 @@ export default function Home() {
                         setSelectedId(null)
                         setPopupState(null)
                     }}
-                    amount={0}
-                    description={''}
-                    // Should we also add IncomeId here?
-                    >
-
-                </UpdateDataForm>
+                    amount={income}
+                    description={description}
+                // Should we also add IncomeId here?
+                ></UpdateDataForm>
             )}
-            )
-            }
+
 
 
         </div>
