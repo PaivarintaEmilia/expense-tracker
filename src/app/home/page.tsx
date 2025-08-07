@@ -16,7 +16,7 @@ type IncomeAmount = {
 
 export default function Home() {
 
-    session()
+    //session() --> When home button is pressed automatically changes to authentication page. This should be fixed
 
     const [amount, setAmount] = useState<IncomeAmount[]>([])
     const [income, setIncome] = useState<number>(0)
@@ -71,9 +71,16 @@ export default function Home() {
 
     /** Update Income */
     const updateIncomeF = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
+        e.preventDefault() 
 
-        updateIncome(Number(selectedId), income, description)
+        console.log("update info: ", selectedId, income, description)
+
+        await updateIncome(Number(selectedId), income, description)
+
+        await refreshIncomeList() 
+        setShowPopup(false)
+        setSelectedId(null)
+        setPopupState(null)
     }
 
     return (
@@ -131,9 +138,9 @@ export default function Home() {
                     <p>Do you want to delete the item {selectedId}?</p>
                     <div>
                         <button
-                            onClick={() => {
-                                deleteIncome(selectedId)
-                                refreshIncomeList()
+                            onClick={ async () => {
+                                await deleteIncome(Number(selectedId))
+                                await refreshIncomeList()
                                 console.log('Income item deleted')
                                 setShowPopup(false)
                                 setSelectedId(null)
@@ -150,7 +157,7 @@ export default function Home() {
 
             )}
 
-            {showPopup && selectedId && popupState === 'delete' && (
+            {showPopup && selectedId && popupState === 'update' && (
                 <UpdateDataForm
 
                     onSubmit={updateIncomeF}

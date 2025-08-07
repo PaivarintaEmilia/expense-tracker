@@ -38,6 +38,8 @@ export const createIncome = async (user_id: string, income_amount: number, incom
 /** Update income */
 export const updateIncome = async (income_id: number, income_amount: number, income_description: string) => {
 
+    console.log('Updating income with ID:', income_id, typeof income_id)
+
     const { data: income, error } = await supabase
         .from('incomes')
         .update({ income_amount, income_description  })
@@ -56,10 +58,10 @@ export const updateIncome = async (income_id: number, income_amount: number, inc
 
 
 /** Delete Income */
-export const deleteIncome = async (income_id: string | null) => {
+export const deleteIncome = async (income_id: number) => {
 
     if (!income_id) return;
-    const parsedId = parseInt(income_id, 10);
+    //const parsedId = parseInt(income_id, 10);
 
     const { error } = await supabase
         .from('incomes')
