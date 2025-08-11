@@ -56,19 +56,19 @@ export const updateExpense = async (expense_id: number, expense_amount: number, 
 }
 
 
-/** Delete Income */
-export const deleteIncome = async (income_id: number) => {
+/** Delete Expense */
+export const deleteExpense = async (expense_id: number) => {
 
-    if (!income_id) return;
-    //const parsedId = parseInt(income_id, 10);
+    if (!expense_id) return;
+    //const parsedId = parseInt(expense_id, 10);
 
     const { error } = await supabase
-        .from('incomes')
+        .from('expenses')
         .delete()
-        .eq('income_id', income_id)
+        .eq('expense_id', expense_id)
 
     if (error) {
-        console.log('Error while deleting income-table row: ', error)
+        console.log('Error while deleting expense-table row: ', error)
     }
 
 }
