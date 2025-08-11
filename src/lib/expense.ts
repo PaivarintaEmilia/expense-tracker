@@ -34,24 +34,24 @@ export const createExpense = async (user_id: string, expense_amount: number, exp
     return expense
 }
 
-/** Update income */
-export const updateIncome = async (income_id: number, income_amount: number, income_description: string) => {
+/** Update expense */
+export const updateExpense = async (expense_id: number, expense_amount: number, expense_description: string) => {
 
-    console.log('Updating income with ID:', income_id, typeof income_id)
+    console.log('Updating income with ID:', expense_id, typeof expense_id)
 
-    const { data: income, error } = await supabase
-        .from('incomes')
-        .update({ income_amount, income_description  })
-        .eq('income_id', income_id)
+    const { data: expense, error } = await supabase
+        .from('expenses')
+        .update({ expense_amount, expense_description  })
+        .eq('expense_id', expense_id)
         .select()
 
     if (error) {
-        console.log("Error while updating Income item: ", error)
+        console.log("Error while updating expense item: ", error)
     }
 
-    console.log('Updated income data: ', income)
+    console.log('Updated expense data: ', expense)
 
-    return "income, updated"
+    return "expense, updated"
 
 }
 

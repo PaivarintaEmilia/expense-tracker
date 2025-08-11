@@ -14,8 +14,9 @@ type IncomeData = {
 export default function UpdateDataForm({onSubmit, amountOnChange, descriptionOnChange, cancelFunction, amount, description}:IncomeData) {
     return (
         <div className="">
+            <h2>Update Form</h2>
             <form onSubmit={onSubmit}>
-                <label htmlFor="email">Income amount:</label>
+                <label htmlFor="email">Amount:</label>
                 <input
                     type="number"
                     id="incomeAmount"
@@ -23,7 +24,7 @@ export default function UpdateDataForm({onSubmit, amountOnChange, descriptionOnC
                     onChange={amountOnChange}
                     required
                 />
-                <label htmlFor="email">Income description:</label>
+                <label htmlFor="email">Description:</label>
                 <input
                     type="text"
                     id="incomeDescription"

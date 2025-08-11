@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import { getIncome, createIncome, updateIncome, deleteIncome } from '@/lib/income'
-import { getExpenses, createExpense } from '@/lib/expense'
+import { getExpenses, createExpense, updateExpense } from '@/lib/expense'
 import session from '@hooks/session'
 import AddDataForm from '@components/AddDataForm'
 import supabase from '@/lib/supabase'
@@ -127,6 +127,21 @@ export default function Home() {
         setPopupState(null)
     }
 
+    /** Update Expense */
+    const updateExpenseF = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+
+        console.log("Update expense info: ", selectedId, expenseAmount, expenseDescription)
+
+        await updateExpense(Number(selectedId), expenseAmount, expenseDescription)
+
+        await refreshExpenseList()
+        setShowPopup(false)
+        setSelectedId(null)
+        setPopupState(null)
+
+    }
+
     return (
         <div className="flex flex-col items-center">
 
@@ -221,6 +236,7 @@ export default function Home() {
                 description={incomeDescription}
             />
 
+            {/** Create Expense */}
             <h2>Create a new Expense</h2>
             <AddDataForm
                 onSubmit={creatingNewExpense}
@@ -260,17 +276,17 @@ export default function Home() {
             {showPopup && selectedId && popupState === 'update' && (
                 <UpdateDataForm
 
-                    onSubmit={updateIncomeF}
-                    amountOnChange={(e) => setIncomeAmount(Number(e.target.value))}
-                    descriptionOnChange={(e) => setIncomeDescription(e.target.value)}
+                    onSubmit={updateExpenseF} 
+                    amountOnChange={(e) => setExpenseAmount(Number(e.target.value))} 
+                    descriptionOnChange={(e) => setExpenseDescription(e.target.value)} 
                     cancelFunction={() => {
                         setShowPopup(false)
                         setSelectedId(null)
                         setPopupState(null)
                     }}
-                    amount={incomeAmount}
-                    description={incomeDescription}
-                // Should we also add IncomeId here?
+                    amount={expenseAmount} 
+                    description={expenseDescription}
+                // Should we also add ExpenseId here?
                 ></UpdateDataForm>
             )}
 
