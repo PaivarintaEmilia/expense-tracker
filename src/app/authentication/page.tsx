@@ -2,11 +2,11 @@
 import React, { useState } from 'react'
 import supabase from '@lib/supabase'
 import { useRouter } from 'next/navigation'
-import session from '@hooks/session'
+
 
 
 export default function Login() {
-    session()
+
 
     const [email, setEmail] = useState('')
     const [error, setError] = useState<string | null>(null)

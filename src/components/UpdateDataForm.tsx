@@ -2,7 +2,7 @@
 
 
 type IncomeData = {
-    onSubmit: (e: React.FormEvent<HTMLFormElement>) => {},
+    onSubmit: (e: React.FormEvent<HTMLFormElement>) => void,
     amountOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
     descriptionOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
     cancelFunction: () => void,
