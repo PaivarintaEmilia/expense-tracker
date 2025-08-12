@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { getIncome, createIncome, updateIncome, deleteIncome } from '@/lib/income'
 import { getExpenses, createExpense, updateExpense, deleteExpense } from '@/lib/expense'
-import session from '@hooks/session'
+//import session from '@hooks/session'
 import AddDataForm from '@components/AddDataForm'
 import supabase from '@/lib/supabase'
 import UpdateDataForm from '@components/UpdateDataForm'
