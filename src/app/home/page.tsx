@@ -143,9 +143,9 @@ export default function Home() {
     }
 
     return (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center border-solid border-lime-200">
 
-            <h1>Expense Tracker</h1>
+            <h1 className="text-red-500">Expense Tracker</h1>
             <div className="">
                 {/* List of Incomes */}
                 <div className="">
