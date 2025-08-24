@@ -7,11 +7,11 @@ import Link from 'next/link'
 
 export default function Header() {
     return (
-        <div className="">
+        <div className="mt-[10px] px-[10px]">
             <nav 
                 className="
                     flex flex-row justify-end items-center gap-5
-                    border border-sky-300 rounded-md   
+                    border border-stone-700 rounded-md 
                     px-[25px] py-[10px]
                 "
                 >
