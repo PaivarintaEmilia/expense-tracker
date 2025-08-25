@@ -56,7 +56,7 @@ export default function Login() {
                 "
 
             >
-                <h1 className="text-[23px] font-medium leading-snug text-white-900">Create an account</h1>
+                <h1 className="text-[23px] font-medium leading-snug text-white-900 w-full text-center">Create an account or login with Magic Link</h1>
 
                 <form onSubmit={handleEmailRegistration} className="w-400px flex flex-col gap-4">
                     <label htmlFor="email" className="text-[18] font-light text-white-800"></label>
@@ -96,6 +96,7 @@ export default function Login() {
                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300
                         active:translate-y-[1px]
                         disabled:opacity-50 disabled:cursor-not-allowed
+                        cursor-pointer
                     "
                     >Send Magic Link</button>
                 </form>

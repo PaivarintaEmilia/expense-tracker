@@ -143,25 +143,59 @@ export default function Home() {
     }
 
     return (
-        <div className="flex flex-col items-center border-solid border-lime-200">
+        <div className="
+            flex flex-col items-center gap-15
+            border border-lime-200
+            ml-[10px] mr-[10px] my-[25px]
+            py-[50px]
+            "
+        >
 
-            <h1 className="text-red-500">Expense Tracker</h1>
-            <div className="">
+            <h1 className="text-[35px]">Expense Tracker</h1>
+            {/** Lists of the items */}
+            <div className="
+                border border-sky-200
+                w-full
+                flex flex-row gap-20
+                
+                "
+            >
                 {/* List of Incomes */}
-                <div className="">
-                    <h2>Incomes</h2>
+                <div className="
+                    border border-stone-700 rounded-md
+                    px-[40px] py-[35px]
+                    flex flex-col gap-5
+                    "
+                >
+                    <h2 className="text-[20px]">Incomes</h2>
                     <ul>
                         {incomes.map((item, index) => (
                             <li
+                                className="
+                                    cursor-pointer
+                                    py-[8px]
+                                    text-[15px]    
+                                "
                                 key={index}
                                 onMouseEnter={() => setHoveredId(item.income_id)}
                                 onMouseLeave={() => setHoveredId(null)}
                             >
-                                {item.income_amount}{item.income_description}
+                                {item.income_amount} € {item.income_description}
 
+                                {/** Delete and update buttons for items */}
                                 {hoveredId === item.income_id && (
-                                    <div>
+                                    <div className="
+                                        border border-sky-200
+                                        py-[8px]
+                                        flex flex-row gap-5
+                                        "
+                                    >
                                         <button
+                                            className="
+                                                cursor-pointer
+                                                transition
+                                                hover:text-sky-300
+                                            "
                                             onClick={() => {
                                                 setSelectedItem({ id: item.income_id, type: 'income' })
                                                 setShowPopup(true)
@@ -170,6 +204,11 @@ export default function Home() {
                                         >Delete</button>
 
                                         <button
+                                            className="
+                                                cursor-pointer
+                                                transition
+                                                hover:text-sky-300
+                                            "
                                             onClick={() => {
                                                 setSelectedItem({ id: item.income_id, type: 'income' })
                                                 setShowPopup(true)
@@ -187,20 +226,40 @@ export default function Home() {
 
 
                 { /** List of expenses */}
-                <div className="">
-                    <h2>Expenses</h2>
+                <div className="
+                    border border-stone-700 rounded-md
+                    px-[40px] py-[35px]
+                    flex flex-col gap-5
+                    "
+                >
+                    <h2 className="text-[20px]">Expenses</h2>
                     <ul>
                         {expenses.map((item, index) => (
                             <li
+                                className="
+                                    cursor-pointer
+                                    py-[8px]
+                                    text-[15px]
+                                "
                                 key={index}
                                 onMouseEnter={() => setHoveredId(item.expense_id)}
                                 onMouseLeave={() => setHoveredId(null)}
                             >
-                                {item.expense_amount}{item.expense_description}
+                                {item.expense_amount} € {item.expense_description}
 
                                 {hoveredId === item.expense_id && (
-                                    <div>
+                                    <div className="
+                                        border border-sky-200
+                                        py-[8px]
+                                        flex flex-row gap-5
+                                        "
+                                    >
                                         <button
+                                            className="
+                                                cursor-pointer
+                                                transition
+                                                hover:text-sky-300
+                                            "
                                             onClick={() => {
                                                 setSelectedItem({ id: item.expense_id, type: 'expense' })
                                                 setShowPopup(true)
@@ -209,6 +268,11 @@ export default function Home() {
                                         >Delete</button>
 
                                         <button
+                                            className="
+                                                cursor-pointer
+                                                transition
+                                                hover:text-sky-300
+                                            "
                                             onClick={() => {
                                                 setSelectedItem({ id: item.expense_id, type: 'expense' })
                                                 setShowPopup(true)
@@ -225,59 +289,111 @@ export default function Home() {
                 </div>
             </div>
 
+            {/** Create items forms */}
 
-            {/** Create Income */}
-            <h2>Create a new income</h2>
-            <AddDataForm
-                onSubmit={createNewIncome}
-                amountOnChange={(e) => setIncomeAmount(Number(e.target.value))}
-                descriptionOnChange={(e) => setIncomeDescription(e.target.value)}
-                amount={incomeAmount}
-                description={incomeDescription}
-            />
+            <div className="
+                border border-pink-500
+                w-full
+                flex flex-col gap-8
+                "
+            >
+                {/** Create Income */}
+                <h2 className="text-[20px] border border-amber-300 w-full text-center">Create a new income</h2>
+                <AddDataForm
+                    onSubmit={createNewIncome}
+                    amountOnChange={(e) => setIncomeAmount(Number(e.target.value))}
+                    descriptionOnChange={(e) => setIncomeDescription(e.target.value)}
+                    amount={incomeAmount}
+                    description={incomeDescription}
+                />
 
-            {/** Create Expense */}
-            <h2>Create a new Expense</h2>
-            <AddDataForm
-                onSubmit={creatingNewExpense}
-                amountOnChange={(e) => setExpenseAmount(Number(e.target.value))}
-                descriptionOnChange={(e) => setExpenseDescription(e.target.value)}
-                amount={expenseAmount}
-                description={expenseDescription}
-            />
+                {/** Create Expense */}
+                <h2 className="text-[20px] border border-amber-300 w-full text-center mt-3">Create a new Expense</h2>
+                <AddDataForm
+                    onSubmit={creatingNewExpense}
+                    amountOnChange={(e) => setExpenseAmount(Number(e.target.value))}
+                    descriptionOnChange={(e) => setExpenseDescription(e.target.value)}
+                    amount={expenseAmount}
+                    description={expenseDescription}
+                />
+
+            </div>
+
+
+
 
             {/* Popup */}
 
             {/* When showPopup is true and selectedId is set --> show the popup*/}
             {showPopup && selectedItem && popupState === 'delete' && (
-                <div>
-                    <p>Do you want to delete the item {selectedItem.id}?</p>
-                    <div>
-                        <button
-                            onClick={async () => {
-                                if (selectedItem.type === 'income') {
-                                    await deleteIncome(Number(selectedItem.id))
-                                    await refreshIncomeList()
-                                    console.log('Income item deleted')
+                <div className="fixed inset-0 z-50 flex items-center justify-center">
+                    {/** Background of the page while Popup (is covering popup at the moment) */}
+                    <div className="absolute inset-0 bg-black/70"></div>
 
-                                } else if (selectedItem.type === 'expense') {
-                                    await deleteExpense(Number(selectedItem.id))
-                                    await refreshExpenseList()
-                                    console.log('Expense item deleted')
+                    {/** Popup card */}
+                    <div
+                        role="dialog"
+                        arial-modal="true"
+                        className="
+                            relative bg-stone-800
+                            border border-sky-300 rounded-md
+                            w-[92vw] max-w-[360px] md:max-w-[520px] lg:max-w-[640px]
+                            max-h-[85vh] overflow-y-auto
+                            p-6 md:p-7 lg:p-8 shadow-lg
+                        "
+                    >
+                        <p className="text-[16px] md:text-[18px] w-full text-center">Do you want to delete the item {selectedItem.id}?</p>
+                        <div className="mt-6 flex justify-center gap-5">
+                            <button
+                                className="             
+                                    inline-flex items-center
+                                    text-[18px] font-normal
+                                    mt-2
+                                    cursor-pointer
+                                "
+                                onClick={async () => {
+                                    if (selectedItem.type === 'income') {
+                                        await deleteIncome(Number(selectedItem.id))
+                                        await refreshIncomeList()
+                                        console.log('Income item deleted')
 
-                                }
+                                    } else if (selectedItem.type === 'expense') {
+                                        await deleteExpense(Number(selectedItem.id))
+                                        await refreshExpenseList()
+                                        console.log('Expense item deleted')
 
-                                setShowPopup(false)
-                                setSelectedItem({ id: null, type: null })
-                            }}
-                        >Yes</button>
-                        <button
-                            onClick={() => {
-                                setShowPopup(false)
-                                setSelectedItem({ id: null, type: null })
-                            }}
-                        >Cancel</button>
+                                    }
+
+                                    setShowPopup(false)
+                                    setSelectedItem({ id: null, type: null })
+                                }}
+                            >Yes</button>
+                            <button
+                                className="
+                                    mt-2
+                                    inline-flex items-center justify-center
+                                    rounded-md
+                                    border border-sky-300
+                                    px-4 py-2
+                                    text-[15px] font-bold
+                                    text-white-900
+                                    transition
+                                    hover:bg-stone-700 hover:shadow 
+                                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200
+                                    active:translate-y-[1px]
+                                    disabled:opacity-50 disabled:cursor-not-allowed
+                                    cursor-pointer
+                                "
+                                onClick={() => {
+                                    setShowPopup(false)
+                                    setSelectedItem({ id: null, type: null })
+                                }}
+                            >Cancel</button>
+                        </div>
+
+
                     </div>
+
                 </div>
 
             )}

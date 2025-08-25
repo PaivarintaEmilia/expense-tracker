@@ -48,7 +48,7 @@ export default function Header() {
                         inline-flex items-center
                         text-[18px] font-normal 
                         transition
-                        hover:font-bold
+                        hover:font-bold cursor-pointer
                         "
                     >Sign Out</button>
                 {/** <button onClick={() => {supabase.auth.signOut}}>Sign Out</button> */}
