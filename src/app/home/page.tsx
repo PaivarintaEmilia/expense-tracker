@@ -294,28 +294,33 @@ export default function Home() {
             <div className="
                 border border-pink-500
                 w-full
-                flex flex-col gap-8
+                flex flex-row gap-8 justify-center items-center
                 "
             >
                 {/** Create Income */}
-                <h2 className="text-[20px] border border-amber-300 w-full text-center">Create a new income</h2>
-                <AddDataForm
-                    onSubmit={createNewIncome}
-                    amountOnChange={(e) => setIncomeAmount(Number(e.target.value))}
-                    descriptionOnChange={(e) => setIncomeDescription(e.target.value)}
-                    amount={incomeAmount}
-                    description={incomeDescription}
-                />
+                <div className="w-90">
+                    <h2 className="text-[20px] border border-amber-300 w-full text-center">Create a new income</h2>
+                    <AddDataForm
+                        onSubmit={createNewIncome}
+                        amountOnChange={(e) => setIncomeAmount(Number(e.target.value))}
+                        descriptionOnChange={(e) => setIncomeDescription(e.target.value)}
+                        amount={incomeAmount}
+                        description={incomeDescription}
+                    />
+                </div>
+
 
                 {/** Create Expense */}
-                <h2 className="text-[20px] border border-amber-300 w-full text-center mt-3">Create a new Expense</h2>
-                <AddDataForm
-                    onSubmit={creatingNewExpense}
-                    amountOnChange={(e) => setExpenseAmount(Number(e.target.value))}
-                    descriptionOnChange={(e) => setExpenseDescription(e.target.value)}
-                    amount={expenseAmount}
-                    description={expenseDescription}
-                />
+                <div className="w-90">
+                    <h2 className="text-[20px] border border-amber-300 w-full text-center">Create a new Expense</h2>
+                    <AddDataForm
+                        onSubmit={creatingNewExpense}
+                        amountOnChange={(e) => setExpenseAmount(Number(e.target.value))}
+                        descriptionOnChange={(e) => setExpenseDescription(e.target.value)}
+                        amount={expenseAmount}
+                        description={expenseDescription}
+                    />
+                </div>
 
             </div>
 
@@ -400,36 +405,55 @@ export default function Home() {
 
             {showPopup && selectedItem.id && popupState === 'update' && (
 
-                selectedItem.type === 'income' ? (
-                    <UpdateDataForm
-                        onSubmit={updateIncomeF}
-                        amountOnChange={(e) => setIncomeAmount(Number(e.target.value))}
-                        descriptionOnChange={(e) => setIncomeDescription(e.target.value)}
-                        cancelFunction={() => {
-                            setShowPopup(false)
-                            setSelectedItem({ id: null, type: null })
-                            setPopupState(null)
-                        }}
-                        amount={incomeAmount}
-                        description={incomeDescription}
-                    // Should we also add IncomeId here?
-                    ></UpdateDataForm>
-                ) : (
-                    <UpdateDataForm
-                        onSubmit={updateExpenseF}
-                        amountOnChange={(e) => setExpenseAmount(Number(e.target.value))}
-                        descriptionOnChange={(e) => setExpenseDescription(e.target.value)}
-                        cancelFunction={() => {
-                            setShowPopup(false)
-                            setSelectedItem({ id: null, type: null })
-                            setPopupState(null)
-                        }}
-                        amount={expenseAmount}
-                        description={expenseDescription}
-                    // Should we also add ExpenseId here?
-                    ></UpdateDataForm>
-                ))
-            }
+                <div className="fixed inset-0 z-50 flex items-center justify-center">
+                    {/** Darker background */}
+                    <div className="absolute inset-0 bg-black/70"></div>
+
+                    {/** Popup card for updating items */}
+                    <div 
+                        role="dialog"
+                        arial-modal="true"
+                        className="
+                            relative bg-stone-800
+                            border border-sky-300 rounded-md
+                            w-[92vw] max-w-[360px] md:max-w-[520px] lg:max-w-[640px]
+                            max-h-[85vh] overflow-y-auto
+                            p-6 md:p-7 lg:p-8 shadow-lg
+                        "
+                    >
+
+                        {selectedItem.type === 'income' ? (
+                        <UpdateDataForm
+                            onSubmit={updateIncomeF}
+                            amountOnChange={(e) => setIncomeAmount(Number(e.target.value))}
+                            descriptionOnChange={(e) => setIncomeDescription(e.target.value)}
+                            cancelFunction={() => {
+                                setShowPopup(false)
+                                setSelectedItem({ id: null, type: null })
+                                setPopupState(null)
+                            }}
+                            amount={incomeAmount}
+                            description={incomeDescription}
+                        // Should we also add IncomeId here?
+                        ></UpdateDataForm>
+                        ) : (
+                        <UpdateDataForm
+                            onSubmit={updateExpenseF}
+                            amountOnChange={(e) => setExpenseAmount(Number(e.target.value))}
+                            descriptionOnChange={(e) => setExpenseDescription(e.target.value)}
+                            cancelFunction={() => {
+                                setShowPopup(false)
+                                setSelectedItem({ id: null, type: null })
+                                setPopupState(null)
+                            }}
+                            amount={expenseAmount}
+                            description={expenseDescription}
+                        // Should we also add ExpenseId here?
+                        ></UpdateDataForm>
+                        )}
+                    </div>
+                </div>
+            )}
         </div >
     )
 }

@@ -13,16 +13,12 @@ type IncomeData = {
 
 export default function AddDataForm({onSubmit, amountOnChange, descriptionOnChange, amount, description}:IncomeData) {
     return (
-        <div className="
-            flex justify-center
-            "
-        >
             <form 
                 className="
                     flex flex-col justify-start gap-2.5
-                    mx-5
-                    border-3 border-b-green-500
+                    border-3 border-b-green-600
                     w-full
+                    mt-4
                 "
                 onSubmit={onSubmit}>
                 <label htmlFor="email">Amount:</label>
@@ -75,13 +71,12 @@ export default function AddDataForm({onSubmit, amountOnChange, descriptionOnChan
                         text-white-900
                         transition
                         hover:bg-stone-800 hover:shadow 
-                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200
+                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300
                         active:translate-y-[1px]
                         disabled:opacity-50 disabled:cursor-not-allowed
                         cursor-pointer
                     "
                 >Create</button>
             </form>
-        </div>
     )
 }
