@@ -333,14 +333,20 @@ export default function Home() {
             {showPopup && selectedItem && popupState === 'delete' && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center">
                     {/** Background of the page while Popup (is covering popup at the moment) */}
-                    <div className="absolute inset-0 bg-black/70"></div>
+                    <div
+                        className="absolute inset-0 bg-black/70"
+                        onClick={() => {
+                            setShowPopup(false)
+                            setSelectedItem({ id: null, type: null })
+                        }}
+                    ></div>
 
-                    {/** Popup card */}
+                    {/** Popup card delete */}
                     <div
                         role="dialog"
                         arial-modal="true"
                         className="
-                            relative bg-stone-800
+                            relative z-10 bg-stone-800
                             border border-sky-300 rounded-md
                             w-[92vw] max-w-[360px] md:max-w-[520px] lg:max-w-[640px]
                             max-h-[85vh] overflow-y-auto
@@ -407,14 +413,20 @@ export default function Home() {
 
                 <div className="fixed inset-0 z-50 flex items-center justify-center">
                     {/** Darker background */}
-                    <div className="absolute inset-0 bg-black/70"></div>
+                    <div
+                        className="absolute inset-0 bg-black/70"
+                        onClick={() => {
+                            setShowPopup(false)
+                            setSelectedItem({ id: null, type: null })
+                        }}
+                    ></div>
 
                     {/** Popup card for updating items */}
-                    <div 
+                    <div
                         role="dialog"
                         arial-modal="true"
                         className="
-                            relative bg-stone-800
+                            relative z-10 bg-stone-800
                             border border-sky-300 rounded-md
                             w-[92vw] max-w-[360px] md:max-w-[520px] lg:max-w-[640px]
                             max-h-[85vh] overflow-y-auto
@@ -423,33 +435,33 @@ export default function Home() {
                     >
 
                         {selectedItem.type === 'income' ? (
-                        <UpdateDataForm
-                            onSubmit={updateIncomeF}
-                            amountOnChange={(e) => setIncomeAmount(Number(e.target.value))}
-                            descriptionOnChange={(e) => setIncomeDescription(e.target.value)}
-                            cancelFunction={() => {
-                                setShowPopup(false)
-                                setSelectedItem({ id: null, type: null })
-                                setPopupState(null)
-                            }}
-                            amount={incomeAmount}
-                            description={incomeDescription}
-                        // Should we also add IncomeId here?
-                        ></UpdateDataForm>
+                            <UpdateDataForm
+                                onSubmit={updateIncomeF}
+                                amountOnChange={(e) => setIncomeAmount(Number(e.target.value))}
+                                descriptionOnChange={(e) => setIncomeDescription(e.target.value)}
+                                cancelFunction={() => {
+                                    setShowPopup(false)
+                                    setSelectedItem({ id: null, type: null })
+                                    setPopupState(null)
+                                }}
+                                amount={incomeAmount}
+                                description={incomeDescription}
+                            // Should we also add IncomeId here?
+                            ></UpdateDataForm>
                         ) : (
-                        <UpdateDataForm
-                            onSubmit={updateExpenseF}
-                            amountOnChange={(e) => setExpenseAmount(Number(e.target.value))}
-                            descriptionOnChange={(e) => setExpenseDescription(e.target.value)}
-                            cancelFunction={() => {
-                                setShowPopup(false)
-                                setSelectedItem({ id: null, type: null })
-                                setPopupState(null)
-                            }}
-                            amount={expenseAmount}
-                            description={expenseDescription}
-                        // Should we also add ExpenseId here?
-                        ></UpdateDataForm>
+                            <UpdateDataForm
+                                onSubmit={updateExpenseF}
+                                amountOnChange={(e) => setExpenseAmount(Number(e.target.value))}
+                                descriptionOnChange={(e) => setExpenseDescription(e.target.value)}
+                                cancelFunction={() => {
+                                    setShowPopup(false)
+                                    setSelectedItem({ id: null, type: null })
+                                    setPopupState(null)
+                                }}
+                                amount={expenseAmount}
+                                description={expenseDescription}
+                            // Should we also add ExpenseId here?
+                            ></UpdateDataForm>
                         )}
                     </div>
                 </div>
