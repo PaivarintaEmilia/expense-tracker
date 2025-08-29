@@ -10,6 +10,7 @@ export default function Login() {
 
     const [email, setEmail] = useState('')
     const [error, setError] = useState<string | null>(null)
+    var successMessage = ''
 
     const router = useRouter()
 
@@ -18,7 +19,6 @@ export default function Login() {
         e.preventDefault()
 
         console.log('Email:', email)
-        setError('BUTTON PRESSED')
 
         try {
             const { data, error } = await supabase.auth.signInWithOtp({
@@ -29,7 +29,7 @@ export default function Login() {
                 setError(error.message)
             } else {
                 console.log('Registration successful:', data)
-                router.push('home') // This might not be needed as the redirect link is determinated in Supabase
+                successMessage = 'Magic Link has been sent to your email!'
             }
         } catch (error) {
             console.log('Error during registration: ', error)
@@ -102,6 +102,7 @@ export default function Login() {
                 </form>
                 {/* Show error message */}
                 <h2 className="text-[18px] font-light text-red-600 text-center" aria-live="polite">{error}</h2>
+                <h2 className="text-[18px] font-light text-lime-400 text-center" aria-live="polite">{successMessage}</h2>
             </div>
         </div>
     )
