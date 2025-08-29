@@ -145,7 +145,6 @@ export default function Home() {
     return (
         <div className="
             flex flex-col items-center gap-15
-            border border-lime-200
             ml-[10px] mr-[10px] my-[25px]
             py-[50px]
             "
@@ -154,10 +153,11 @@ export default function Home() {
             <h1 className="text-[35px]">Expense Tracker</h1>
             {/** Lists of the items */}
             <div className="
-                border border-sky-200
                 w-full
-                flex flex-row gap-20
-                
+                flex flex-col gap-12 justify-center
+                my-[35px]
+                px-[30px]
+                lg:flex-row 
                 "
             >
                 {/* List of Incomes */}
@@ -185,7 +185,6 @@ export default function Home() {
                                 {/** Delete and update buttons for items */}
                                 {hoveredId === item.income_id && (
                                     <div className="
-                                        border border-sky-200
                                         py-[8px]
                                         flex flex-row gap-5
                                         "
@@ -249,7 +248,6 @@ export default function Home() {
 
                                 {hoveredId === item.expense_id && (
                                     <div className="
-                                        border border-sky-200
                                         py-[8px]
                                         flex flex-row gap-5
                                         "
@@ -292,14 +290,15 @@ export default function Home() {
             {/** Create items forms */}
 
             <div className="
-                border border-pink-500
                 w-full
-                flex flex-row gap-8 justify-center items-center
+                flex flex-col gap-20 justify-center items-center
+                mb-[100px]
+                lg:flex-row
                 "
             >
                 {/** Create Income */}
                 <div className="w-90">
-                    <h2 className="text-[20px] border border-amber-300 w-full text-center">Create a new income</h2>
+                    <h2 className="text-[20px] w-full text-center">Create a new income</h2>
                     <AddDataForm
                         onSubmit={createNewIncome}
                         amountOnChange={(e) => setIncomeAmount(Number(e.target.value))}
@@ -312,7 +311,7 @@ export default function Home() {
 
                 {/** Create Expense */}
                 <div className="w-90">
-                    <h2 className="text-[20px] border border-amber-300 w-full text-center">Create a new Expense</h2>
+                    <h2 className="text-[20px] w-full text-center">Create a new Expense</h2>
                     <AddDataForm
                         onSubmit={creatingNewExpense}
                         amountOnChange={(e) => setExpenseAmount(Number(e.target.value))}

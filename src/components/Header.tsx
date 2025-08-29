@@ -26,9 +26,10 @@ export default function Header() {
         <div className="mt-[10px] px-[10px]">
             <nav
                 className="
-                    flex flex-row justify-end items-center gap-5
+                    flex flex-row justify-center items-center gap-5
                     border border-stone-700 rounded-md 
                     px-[25px] py-[10px]
+                    lg:justify-end 
                 "
             >
                 <Link

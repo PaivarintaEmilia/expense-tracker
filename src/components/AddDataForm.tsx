@@ -16,7 +16,6 @@ export default function AddDataForm({onSubmit, amountOnChange, descriptionOnChan
             <form 
                 className="
                     flex flex-col justify-start gap-2.5
-                    border-3 border-b-green-600
                     w-full
                     mt-4
                 "
