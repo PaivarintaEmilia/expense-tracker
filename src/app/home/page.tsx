@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { getIncome, createIncome, updateIncome, deleteIncome } from '@/lib/income'
 import { getExpenses, createExpense, updateExpense, deleteExpense } from '@/lib/expense'
 import { getCategories } from '@lib/categories'
@@ -20,6 +20,7 @@ type Expenses = {
     expense_amount: number
     expense_description: string
     expense_id: string
+    category_id: number
 }
 
 type Categories = {
@@ -158,6 +159,14 @@ export default function Home() {
         setPopupState(null)
 
     }
+
+    /** Filter the categories */
+
+    const categoryExpenses = useMemo(() => {
+        if (typeof selectedCategoryId !== 'number') return [];
+        return expenses.filter((e) => e.category_id === selectedCategoryId);
+    }, [expenses, selectedCategoryId]);
+
 
     return (
         <div className="
@@ -345,18 +354,29 @@ export default function Home() {
 
             <div className="border border-lime-400 w-full flex flex-col justify-center items-center">
 
-                <h2 className="text-[23px]">Categories</h2>
+                <h2 className="text-[23px] mb-[35px]">Categories</h2>
 
-                <form>
+                <form className="w-[300px] mb-[35px]">
                     <select
+                        className="
+                            w-full
+                            border border-neutral-600
+                            rounded-md
+                            px-3 py-2
+                            text-gray-200 font-light
+                            outline-none
+                            hover:border-gray-400
+                            focus:border-sky-200 focus:ring-0.5 focus:ring-sky-200
+                        "
                         onChange={(e) => {
                             const value = parseInt(e.target.value)
                             setSelectedCategoryId(value)
                         }
-                            
-                         }
+
+                        }
                         value={selectedCategoryId}
                     >
+                        <option value="">Select category</option>
                         {categories.map(option => (
                             <option key={option.category_id} value={option.category_id}>
                                 {option.category_name}
@@ -368,6 +388,22 @@ export default function Home() {
                 </form>
 
                 <p>Selected Category id: {selectedCategoryId}</p>
+
+
+
+                <ul>
+                    {categoryExpenses.length === 0 ? (
+                        <li>This category does not include items.</li>
+                    ) : (
+                        categoryExpenses.map((item) => (
+                            <li key={item.expense_id}>
+                                {item.expense_amount} € {item.expense_description}
+                            </li>
+                        ))
+                    )
+                    }
+                </ul>
+
 
 
             </div>
