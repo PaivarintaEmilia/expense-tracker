@@ -24,6 +24,7 @@ export default function Login() {
             const { data, error } = await supabase.auth.signInWithOtp({
                 email: email,
             })
+            console.log('Data34444:', data)
 
             if (error) {
                 setError(error.message)

@@ -8,7 +8,7 @@ import supabase from '@/lib/supabase'
 import UpdateDataForm from '@components/UpdateDataForm'
 
 
-/* Type */
+/* Types */
 type Incomes = {
     income_amount: number
     income_description: string
@@ -34,7 +34,7 @@ export default function Home() {
     const [expenseDescription, setExpenseDescription] = useState<string>('')
 
     /* UseStates for deletion/update-functionalities*/
-    const [hoveredId, setHoveredId] = useState<string | null>(null) // Activates the delete-button when user is hovering on top of the list item
+    // This might not be useful: const [hoveredId, setHoveredId] = useState<string | null>(null) 
     const [showPopup, setShowPopup] = useState<boolean>(false) // To activate and deactivate the popUp
     const [selectedItem, setSelectedItem] = useState<{ id: string | null, type: 'income' | 'expense' | null }>({ id: null, type: null }) // To get the id and type of the item. Used to pass correct id to delete or updaet functionality
 
@@ -131,9 +131,9 @@ export default function Home() {
     const updateExpenseF = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        console.log("Update expense info: ", selectedItem, expenseAmount, expenseDescription)
+        console.log("Update expense info: ", selectedItem.id, expenseAmount, expenseDescription)
 
-        await updateExpense(Number(selectedItem), expenseAmount, expenseDescription)
+        await updateExpense(Number(selectedItem.id), expenseAmount, expenseDescription)
 
         await refreshExpenseList()
         setShowPopup(false)
@@ -177,13 +177,13 @@ export default function Home() {
                                     text-[15px]    
                                 "
                                 key={index}
-                                onMouseEnter={() => setHoveredId(item.income_id)}
-                                onMouseLeave={() => setHoveredId(null)}
+                                onMouseEnter={() => setSelectedItem({ id: item.income_id, type: 'income'})}
+                                onMouseLeave={() => {}}
                             >
                                 {item.income_amount} € {item.income_description}
 
                                 {/** Delete and update buttons for items */}
-                                {hoveredId === item.income_id && (
+                                {selectedItem.id === item.income_id && selectedItem.type === 'income' && (
                                     <div className="
                                         py-[8px]
                                         flex flex-row gap-5
@@ -241,12 +241,12 @@ export default function Home() {
                                     text-[15px]
                                 "
                                 key={index}
-                                onMouseEnter={() => setHoveredId(item.expense_id)}
-                                onMouseLeave={() => setHoveredId(null)}
+                                onMouseEnter={() => setSelectedItem({ id: item.expense_id, type: 'expense'})}
+                                onMouseLeave={() => {}} //setSelectedItem({ id: null, type: null })
                             >
                                 {item.expense_amount} € {item.expense_description}
 
-                                {hoveredId === item.expense_id && (
+                                {selectedItem.id === item.expense_id && selectedItem.type === 'expense' && (
                                     <div className="
                                         py-[8px]
                                         flex flex-row gap-5
@@ -275,8 +275,8 @@ export default function Home() {
                                                 setSelectedItem({ id: item.expense_id, type: 'expense' })
                                                 setShowPopup(true)
                                                 setPopupState('update')
-                                                setIncomeAmount(item.expense_amount)
-                                                setIncomeDescription(item.expense_description)
+                                                setExpenseAmount(item.expense_amount)
+                                                setExpenseDescription(item.expense_description)
                                             }}
                                         >Update</button>
                                     </div>
@@ -301,7 +301,13 @@ export default function Home() {
                     <h2 className="text-[20px] w-full text-center">Create a new income</h2>
                     <AddDataForm
                         onSubmit={createNewIncome}
-                        amountOnChange={(e) => setIncomeAmount(Number(e.target.value))}
+                        amountOnChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            if (!showPopup) {
+                                setIncomeAmount(Number(e.target.value))
+                            }
+                            return
+                            // This is not working, fix the issue where input-fields are showing on create form while update-form is updated
+                        }}
                         descriptionOnChange={(e) => setIncomeDescription(e.target.value)}
                         amount={incomeAmount}
                         description={incomeDescription}
