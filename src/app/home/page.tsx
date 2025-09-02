@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { getIncome, createIncome, updateIncome, deleteIncome } from '@/lib/income'
 import { getExpenses, createExpense, updateExpense, deleteExpense } from '@/lib/expense'
+import { getCategories } from '@lib/categories'
 //import session from '@hooks/session'
 import AddDataForm from '@components/AddDataForm'
 import supabase from '@/lib/supabase'
@@ -21,6 +22,11 @@ type Expenses = {
     expense_id: string
 }
 
+type Categories = {
+    category_id: number
+    category_name: string
+}
+
 export default function Home() {
 
     //session() --> When home button is pressed automatically changes to authentication page. This should be fixed
@@ -32,6 +38,10 @@ export default function Home() {
     const [expenses, setExpenses] = useState<Expenses[]>([])
     const [expenseAmount, setExpenseAmount] = useState<number>(0)
     const [expenseDescription, setExpenseDescription] = useState<string>('')
+
+    const [categories, setCategories] = useState<Categories[]>([])
+    const [selectedCategoryId, setSelectedCategoryId] = useState<number | ''>('');
+
 
     /* UseStates for deletion/update-functionalities*/
     const [hoveredId, setHoveredId] = useState<string | null>(null) // Activates the delete-button when user is hovering on top of the list item
@@ -68,9 +78,16 @@ export default function Home() {
         setExpenses(updatedData)
     }
 
+    /* Get categories */
+    const refreshCategoriesList = async () => {
+        const categoriesData = await getCategories()
+        setCategories(categoriesData)
+    }
+
     useEffect(() => {
         refreshIncomeList()
         refreshExpenseList()
+        refreshCategoriesList()
     }, [])
 
     /* Creat new Income*/
@@ -322,6 +339,40 @@ export default function Home() {
                 </div>
 
             </div>
+
+
+            {/** Categories */}
+
+            <div className="border border-lime-400 w-full flex flex-col justify-center items-center">
+
+                <h2 className="text-[23px]">Categories</h2>
+
+                <form>
+                    <select
+                        onChange={(e) => {
+                            const value = parseInt(e.target.value)
+                            setSelectedCategoryId(value)
+                        }
+                            
+                         }
+                        value={selectedCategoryId}
+                    >
+                        {categories.map(option => (
+                            <option key={option.category_id} value={option.category_id}>
+                                {option.category_name}
+                            </option>
+                        ))}
+                    </select>
+
+                    {/** Add later option to choose incomes or expenses and a timeframe */}
+                </form>
+
+                <p>Selected Category id: {selectedCategoryId}</p>
+
+
+            </div>
+
+
 
 
 
