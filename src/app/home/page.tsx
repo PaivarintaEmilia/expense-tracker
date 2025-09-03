@@ -400,17 +400,12 @@ export default function Home() {
                                 {item.expense_amount} € {item.expense_description}
                             </li>
                         ))
-                    )
-                    }
+                    )}
                 </ul>
-
-
-
+                <p>
+                    Total for selected category: {categoryExpenses.reduce((sum, item) => sum + item.expense_amount, 0)} €
+                </p>
             </div>
-
-
-
-
 
 
             {/* Popup */}
