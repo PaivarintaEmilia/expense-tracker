@@ -37,8 +37,8 @@ export default function Home() {
     const [incomeDescription, setIncomeDescription] = useState<string>('')
 
     const [expenses, setExpenses] = useState<Expenses[]>([])
-    const [expenseAmount, setExpenseAmount] = useState<number>(0)
-    const [expenseDescription, setExpenseDescription] = useState<string>('')
+    const [expenseAmount, setExpenseAmount] = useState<number | null >()
+    const [expenseDescription, setExpenseDescription] = useState<string | null>()
 
     const [categories, setCategories] = useState<Categories[]>([])
     const [selectedCategoryId, setSelectedCategoryId] = useState<number | ''>('');
@@ -111,8 +111,8 @@ export default function Home() {
     */
 
     /** Create new expense */
-    const creatingNewExpense = async () => {
-        //e.preventDefault() This might be better to not to have 
+    const creatingNewExpense = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault() 
 
         const date = new Date();
 
@@ -120,14 +120,15 @@ export default function Home() {
 
         const userId = user?.id
 
-        console.log("userID", userId)
-        console.log("examount", expenseAmount)
-        console.log("exdate", date)
-        console.log("exdesc", expenseDescription)
+        console.log("Create Expense userID", userId)
+        console.log("Create Expense examount", expenseAmount)
+        console.log("Create Expense exdate", date)
+        console.log("Create Expense exdesc", expenseDescription)
+        console.log("Create Expense category id", selectedCategoryId)
 
-        createExpense(userId, expenseAmount, date, expenseDescription, Number(selectedCategoryId))
+        await createExpense(userId, Number(expenseAmount), date, String(expenseDescription), Number(selectedCategoryId))
 
-        refreshExpenseList()
+        await refreshExpenseList()
         setExpenseAmount(0)
         setExpenseDescription('')
 
@@ -153,7 +154,7 @@ export default function Home() {
 
         console.log("Update expense info: ", selectedItem.id, expenseAmount, expenseDescription)
 
-        await updateExpense(Number(selectedItem.id), expenseAmount, expenseDescription)
+        await updateExpense(Number(selectedItem.id), Number(expenseAmount), String(expenseDescription))
 
         await refreshExpenseList()
         setShowPopup(false)
@@ -350,8 +351,8 @@ export default function Home() {
                         onSubmit={creatingNewExpense}
                         amountOnChange={(e) => setExpenseAmount(Number(e.target.value))}
                         descriptionOnChange={(e) => setExpenseDescription(e.target.value)}
-                        amount={expenseAmount}
-                        description={expenseDescription} 
+                        amount={Number(expenseAmount)}
+                        description={String(expenseDescription)} 
                         selectedCategoryOnChange={(e) => {
                             const value = parseInt(e.target.value)
                             setSelectedCategoryId(value)
@@ -552,8 +553,8 @@ export default function Home() {
                                     setSelectedItem({ id: null, type: null })
                                     setPopupState(null)
                                 }}
-                                amount={expenseAmount}
-                                description={expenseDescription}
+                                amount={Number(expenseAmount)}
+                                description={String(expenseDescription)}
                             // Should we also add ExpenseId here?
                             ></UpdateDataForm>
                         )}

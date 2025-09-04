@@ -57,6 +57,7 @@ export default function AddDataForm({ onSubmit, amountOnChange, descriptionOnCha
                     "
                 type="text"
                 id="incomeDescription"
+                placeholder="Description"
                 value={description}
                 onChange={descriptionOnChange}
             />
