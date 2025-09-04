@@ -18,12 +18,12 @@ export const getExpenses = async () => {
 }
 
 /** Create Expense */
-export const createExpense = async (user_id: string, expense_amount: number, expense_created_at: Date, expense_description: string) => {
+export const createExpense = async (user_id: string, expense_amount: number, expense_created_at: Date, expense_description: string, category_id: number) => {
 
     const { data: expense, error } = await supabase
         .from('expenses')
         .insert([
-            { user_id, expense_amount, expense_created_at, expense_description },
+            { user_id, expense_amount, expense_created_at, expense_description, category_id },
         ])
         .select()
 

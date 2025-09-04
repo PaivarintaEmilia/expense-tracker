@@ -110,7 +110,7 @@ export default function Home() {
 
     /** Create new expense */
     const creatingNewExpense = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
+        //e.preventDefault() This might be better to not to have 
 
         const date = new Date();
 
@@ -123,7 +123,7 @@ export default function Home() {
         console.log("exdate", date)
         console.log("exdesc", expenseDescription)
 
-        createExpense(userId, expenseAmount, date, expenseDescription)
+        createExpense(userId, expenseAmount, date, expenseDescription, Number(selectedCategoryId))
 
         refreshExpenseList()
         setExpenseAmount(0)
@@ -322,7 +322,7 @@ export default function Home() {
                 lg:flex-row
                 "
             >
-                {/** Create Income */}
+                {/** Create Income 
                 <div className="w-90">
                     <h2 className="text-[20px] w-full text-center">Create a new income</h2>
                     <AddDataForm
@@ -333,7 +333,7 @@ export default function Home() {
                         description={incomeDescription}
                     />
                 </div>
-
+                */}
 
                 {/** Create Expense */}
                 <div className="w-90">
@@ -343,8 +343,13 @@ export default function Home() {
                         amountOnChange={(e) => setExpenseAmount(Number(e.target.value))}
                         descriptionOnChange={(e) => setExpenseDescription(e.target.value)}
                         amount={expenseAmount}
-                        description={expenseDescription}
-                    />
+                        description={expenseDescription} 
+                        selectedCategoryOnChange={(e) => {
+                            const value = parseInt(e.target.value)
+                            setSelectedCategoryId(value)
+                        } } 
+                        categoryId={selectedCategoryId} 
+                        categoriesList={categories}                    />
                 </div>
 
             </div>
