@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect, useMemo } from 'react'
-import { getIncome, createIncome, updateIncome, deleteIncome } from '@/lib/income'
+import { getIncome, updateIncome, deleteIncome } from '@/lib/income'
 import { getExpenses, createExpense, updateExpense, deleteExpense } from '@/lib/expense'
 import { getCategories } from '@lib/categories'
 //import session from '@hooks/session'
@@ -91,7 +91,7 @@ export default function Home() {
         refreshCategoriesList()
     }, [])
 
-    /* Creat new Income*/
+    /* Creat new Income
     const createNewIncome = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
@@ -108,8 +108,10 @@ export default function Home() {
         setIncomeDescription('')
     }
 
+    */
+
     /** Create new expense */
-    const creatingNewExpense = async (e: React.FormEvent<HTMLFormElement>) => {
+    const creatingNewExpense = async () => {
         //e.preventDefault() This might be better to not to have 
 
         const date = new Date();
