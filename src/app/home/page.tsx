@@ -1,7 +1,8 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { getIncome, createIncome, updateIncome, deleteIncome } from '@/lib/income'
 import { getExpenses, createExpense, updateExpense, deleteExpense } from '@/lib/expense'
+import { getCategories } from '@lib/categories'
 //import session from '@hooks/session'
 import AddDataForm from '@components/AddDataForm'
 import supabase from '@/lib/supabase'
@@ -19,6 +20,12 @@ type Expenses = {
     expense_amount: number
     expense_description: string
     expense_id: string
+    category_id: number
+}
+
+type Categories = {
+    category_id: number
+    category_name: string
 }
 
 export default function Home() {
@@ -32,6 +39,10 @@ export default function Home() {
     const [expenses, setExpenses] = useState<Expenses[]>([])
     const [expenseAmount, setExpenseAmount] = useState<number>(0)
     const [expenseDescription, setExpenseDescription] = useState<string>('')
+
+    const [categories, setCategories] = useState<Categories[]>([])
+    const [selectedCategoryId, setSelectedCategoryId] = useState<number | ''>('');
+
 
     /* UseStates for deletion/update-functionalities*/
     // This might not be useful: const [hoveredId, setHoveredId] = useState<string | null>(null) 
@@ -68,9 +79,16 @@ export default function Home() {
         setExpenses(updatedData)
     }
 
+    /* Get categories */
+    const refreshCategoriesList = async () => {
+        const categoriesData = await getCategories()
+        setCategories(categoriesData)
+    }
+
     useEffect(() => {
         refreshIncomeList()
         refreshExpenseList()
+        refreshCategoriesList()
     }, [])
 
     /* Creat new Income*/
@@ -92,7 +110,7 @@ export default function Home() {
 
     /** Create new expense */
     const creatingNewExpense = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
+        //e.preventDefault() This might be better to not to have 
 
         const date = new Date();
 
@@ -105,7 +123,7 @@ export default function Home() {
         console.log("exdate", date)
         console.log("exdesc", expenseDescription)
 
-        createExpense(userId, expenseAmount, date, expenseDescription)
+        createExpense(userId, expenseAmount, date, expenseDescription, Number(selectedCategoryId))
 
         refreshExpenseList()
         setExpenseAmount(0)
@@ -141,6 +159,14 @@ export default function Home() {
         setPopupState(null)
 
     }
+
+    /** Filter the categories */
+
+    const categoryExpenses = useMemo(() => {
+        if (typeof selectedCategoryId !== 'number') return [];
+        return expenses.filter((e) => e.category_id === selectedCategoryId);
+    }, [expenses, selectedCategoryId]);
+
 
     return (
         <div className="
@@ -296,7 +322,7 @@ export default function Home() {
                 lg:flex-row
                 "
             >
-                {/** Create Income */}
+                {/** Create Income 
                 <div className="w-90">
                     <h2 className="text-[20px] w-full text-center">Create a new income</h2>
                     <AddDataForm
@@ -313,7 +339,7 @@ export default function Home() {
                         description={incomeDescription}
                     />
                 </div>
-
+                */}
 
                 {/** Create Expense */}
                 <div className="w-90">
@@ -323,13 +349,74 @@ export default function Home() {
                         amountOnChange={(e) => setExpenseAmount(Number(e.target.value))}
                         descriptionOnChange={(e) => setExpenseDescription(e.target.value)}
                         amount={expenseAmount}
-                        description={expenseDescription}
-                    />
+                        description={expenseDescription} 
+                        selectedCategoryOnChange={(e) => {
+                            const value = parseInt(e.target.value)
+                            setSelectedCategoryId(value)
+                        } } 
+                        categoryId={selectedCategoryId} 
+                        categoriesList={categories}                    />
                 </div>
 
             </div>
 
 
+            {/** Categories */}
+
+            <div className="border border-lime-400 w-full flex flex-col justify-center items-center">
+
+                <h2 className="text-[23px] mb-[35px]">Categories</h2>
+
+                <form className="w-[300px] mb-[35px]">
+                    <select
+                        className="
+                            w-full
+                            border border-neutral-600
+                            rounded-md
+                            px-3 py-2
+                            text-gray-200 font-light
+                            outline-none
+                            hover:border-gray-400
+                            focus:border-sky-200 focus:ring-0.5 focus:ring-sky-200
+                        "
+                        onChange={(e) => {
+                            const value = parseInt(e.target.value)
+                            setSelectedCategoryId(value)
+                        }
+
+                        }
+                        value={selectedCategoryId}
+                    >
+                        <option value="">Select category</option>
+                        {categories.map(option => (
+                            <option key={option.category_id} value={option.category_id}>
+                                {option.category_name}
+                            </option>
+                        ))}
+                    </select>
+
+                    {/** Add later option to choose incomes or expenses and a timeframe */}
+                </form>
+
+                <p>Selected Category id: {selectedCategoryId}</p>
+
+
+
+                <ul>
+                    {categoryExpenses.length === 0 ? (
+                        <li>This category does not include items.</li>
+                    ) : (
+                        categoryExpenses.map((item) => (
+                            <li key={item.expense_id}>
+                                {item.expense_amount} € {item.expense_description}
+                            </li>
+                        ))
+                    )}
+                </ul>
+                <p>
+                    Total for selected category: {categoryExpenses.reduce((sum, item) => sum + item.expense_amount, 0)} €
+                </p>
+            </div>
 
 
             {/* Popup */}

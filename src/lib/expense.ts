@@ -5,7 +5,7 @@ import supabase from '@lib/supabase'
 export const getExpenses = async () => {
     const { data: expenses, error } = await supabase
         .from('expenses')
-        .select('expense_amount, expense_description, expense_id')
+        .select('expense_amount, expense_description, expense_id, category_id')
 
     if (error || !expenses) {
         console.error('There was an error while fetching the expense data: ', error)
@@ -18,12 +18,12 @@ export const getExpenses = async () => {
 }
 
 /** Create Expense */
-export const createExpense = async (user_id: string, expense_amount: number, expense_created_at: Date, expense_description: string) => {
+export const createExpense = async (user_id: string, expense_amount: number, expense_created_at: Date, expense_description: string, category_id: number) => {
 
     const { data: expense, error } = await supabase
         .from('expenses')
         .insert([
-            { user_id, expense_amount, expense_created_at, expense_description },
+            { user_id, expense_amount, expense_created_at, expense_description, category_id },
         ])
         .select()
 
