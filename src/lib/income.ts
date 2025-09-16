@@ -19,12 +19,12 @@ export const getIncome = async () => {
 
 
 /** Create Income */
-export const createIncome = async (user_id: string, income_amount: number, income_created_at: Date, income_description: string) => {
+export const createIncome = async (user_id: string, income_amount: number, income_created_at: Date, income_description: string, category_id: number) => {
 
     const { data: income, error } = await supabase
         .from('incomes')
         .insert([
-            { user_id, income_amount, income_created_at, income_description },
+            { user_id, income_amount, income_created_at, income_description, category_id },
         ])
         .select()
 

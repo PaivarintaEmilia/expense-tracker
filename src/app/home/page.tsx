@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect, useMemo } from 'react'
-import { getIncome, updateIncome, deleteIncome } from '@/lib/income'
+import { getIncome, createIncome, updateIncome, deleteIncome } from '@/lib/income'
 import { getExpenses, createExpense, updateExpense, deleteExpense } from '@/lib/expense'
 import { getCategories } from '@lib/categories'
 //import session from '@hooks/session'
@@ -32,12 +32,18 @@ export default function Home() {
 
     //session() --> When home button is pressed automatically changes to authentication page. This should be fixed
 
+    // States for new data
+    const [newAmount, setNewAmount] = useState<string>('') 
+    const [newDescription, setNewDescription] = useState<string | null>('')
+
+
     const [incomes, setIncomes] = useState<Incomes[]>([])
     const [incomeAmount, setIncomeAmount] = useState<number>(0)
     const [incomeDescription, setIncomeDescription] = useState<string>('')
 
+    
     const [expenses, setExpenses] = useState<Expenses[]>([])
-    const [expenseAmount, setExpenseAmount] = useState<number | null >()
+    const [expenseAmount, setExpenseAmount] = useState<number | null>()
     const [expenseDescription, setExpenseDescription] = useState<string | null>()
 
     const [categories, setCategories] = useState<Categories[]>([])
@@ -47,6 +53,7 @@ export default function Home() {
     /* UseStates for deletion/update-functionalities*/
     // This might not be useful: const [hoveredId, setHoveredId] = useState<string | null>(null) 
     const [showPopup, setShowPopup] = useState<boolean>(false) // To activate and deactivate the popUp
+    const [showAddForm, setShowAddForm] = useState<boolean>(false) // To activate and deactivate the correct form to add items
     const [selectedItem, setSelectedItem] = useState<{ id: string | null, type: 'income' | 'expense' | null }>({ id: null, type: null }) // To get the id and type of the item. Used to pass correct id to delete or updaet functionality
 
     /** State to tell if Popup should show Delete- or Update-functionality */
@@ -91,46 +98,42 @@ export default function Home() {
         refreshCategoriesList()
     }, [])
 
-    /* Creat new Income
-    const createNewIncome = async (e: React.FormEvent<HTMLFormElement>) => {
+
+
+    /** Create new item */
+    const creatingItem = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        const user = await getUserId()
-
-        const userId = user?.id
-
-        const date = new Date();
-
-        createIncome(userId, incomeAmount, date, incomeDescription)
-
-        refreshIncomeList()
-        setIncomeAmount(0)
-        setIncomeDescription('')
-    }
-
-    */
-
-    /** Create new expense */
-    const creatingNewExpense = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault() 
+        // Read the radio-input fields selection
+        const formObject = new FormData(e.currentTarget)
+        console.log("Type from radio while creating new item: ", formObject)
+        const type = formObject.get('item_type')
 
         const date = new Date();
 
         const user = await getUserId()
-
         const userId = user?.id
 
-        console.log("Create Expense userID", userId)
-        console.log("Create Expense examount", expenseAmount)
-        console.log("Create Expense exdate", date)
-        console.log("Create Expense exdesc", expenseDescription)
-        console.log("Create Expense category id", selectedCategoryId)
+        console.log("Create item userID", userId)
+        console.log("Create item amount", expenseAmount)
+        console.log("Create item date", date)
+        console.log("Create item desc", expenseDescription)
+        console.log("Create item category id", selectedCategoryId)
 
-        await createExpense(userId, Number(expenseAmount), date, String(expenseDescription), Number(selectedCategoryId))
-
-        await refreshExpenseList()
-        setExpenseAmount(0)
-        setExpenseDescription('')
+        // if statement to choose which type if item user is creating
+        if (type === 'income') {
+            createIncome(userId, Number(newAmount), date, String(newDescription), Number(selectedCategoryId)) // HUOM. change states
+            await refreshIncomeList()
+            setNewAmount('')
+            setNewDescription('')
+            setSelectedCategoryId('')
+        } else {
+            await createExpense(userId, Number(newAmount), date, String(newDescription), Number(selectedCategoryId))
+            await refreshExpenseList()
+            setNewAmount('')
+            setNewDescription('')
+            setSelectedCategoryId('')
+        }
 
     }
 
@@ -206,8 +209,8 @@ export default function Home() {
                                     text-[15px]    
                                 "
                                 key={index}
-                                onMouseEnter={() => setSelectedItem({ id: item.income_id, type: 'income'})}
-                                onMouseLeave={() => {}}
+                                onMouseEnter={() => setSelectedItem({ id: item.income_id, type: 'income' })}
+                                onMouseLeave={() => { }}
                             >
                                 {item.income_amount} € {item.income_description}
 
@@ -270,8 +273,8 @@ export default function Home() {
                                     text-[15px]
                                 "
                                 key={index}
-                                onMouseEnter={() => setSelectedItem({ id: item.expense_id, type: 'expense'})}
-                                onMouseLeave={() => {}} //setSelectedItem({ id: null, type: null })
+                                onMouseEnter={() => setSelectedItem({ id: item.expense_id, type: 'expense' })}
+                                onMouseLeave={() => { }} //setSelectedItem({ id: null, type: null })
                             >
                                 {item.expense_amount} € {item.expense_description}
 
@@ -316,6 +319,8 @@ export default function Home() {
                 </div>
             </div>
 
+
+
             {/** Create items forms */}
 
             <div className="
@@ -325,40 +330,21 @@ export default function Home() {
                 lg:flex-row
                 "
             >
-                {/** Create Income 
+                {/** Create new item form */}
                 <div className="w-90">
-                    <h2 className="text-[20px] w-full text-center">Create a new income</h2>
+                    <h2 className="text-[20px] w-full text-center">Create a new Item</h2>
                     <AddDataForm
-                        onSubmit={createNewIncome}
-                        amountOnChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            if (!showPopup) {
-                                setIncomeAmount(Number(e.target.value))
-                            }
-                            return
-                            // This is not working, fix the issue where input-fields are showing on create form while update-form is updated
-                        }}
-                        descriptionOnChange={(e) => setIncomeDescription(e.target.value)}
-                        amount={incomeAmount}
-                        description={incomeDescription}
-                    />
-                </div>
-                */}
-
-                {/** Create Expense */}
-                <div className="w-90">
-                    <h2 className="text-[20px] w-full text-center">Create a new Expense</h2>
-                    <AddDataForm
-                        onSubmit={creatingNewExpense}
-                        amountOnChange={(e) => setExpenseAmount(Number(e.target.value))}
-                        descriptionOnChange={(e) => setExpenseDescription(e.target.value)}
-                        amount={Number(expenseAmount)}
-                        description={String(expenseDescription)} 
+                        onSubmit={creatingItem}
+                        amountOnChange={(e) => setNewAmount(e.target.value)}
+                        descriptionOnChange={(e) => setNewDescription(e.target.value)}
+                        amount={newAmount}
+                        description={String(newDescription)}
                         selectedCategoryOnChange={(e) => {
                             const value = parseInt(e.target.value)
                             setSelectedCategoryId(value)
-                        } } 
-                        categoryId={selectedCategoryId} 
-                        categoriesList={categories}                    />
+                        }}
+                        categoryId={selectedCategoryId}
+                        categoriesList={categories} />
                 </div>
 
             </div>

@@ -6,7 +6,7 @@ type IncomeData = {
     amountOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
     descriptionOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
     selectedCategoryOnChange: (e: React.ChangeEvent<HTMLSelectElement>) => void,
-    amount: number,
+    amount: string,
     description: string,
     categoryId: number | "",
     categoriesList: Categories[],
@@ -22,6 +22,20 @@ export default function AddDataForm({ onSubmit, amountOnChange, descriptionOnCha
                     mt-4
                 "
             onSubmit={onSubmit}>
+            <fieldset>
+                <legend>Select the type:</legend>
+                <div>
+                    <label htmlFor="income">
+                        <input type="radio" id="income" name="item_type" value="income" defaultChecked />
+                        <span>Income</span>
+                    </label>
+                    <label htmlFor="expense">
+                        <input type="radio" id="expense" name="item_type" value="expense" />
+                        <span>Expense</span>
+                    </label>
+                </div>
+            </fieldset>
+
             <label htmlFor="email">Amount:</label>
             <input
                 className="                            
