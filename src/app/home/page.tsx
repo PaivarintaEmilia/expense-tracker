@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { getIncome, createIncome, updateIncome, deleteIncome } from '@/lib/income'
 import { getExpenses, createExpense, updateExpense, deleteExpense } from '@/lib/expense'
+import { getItems, createItem } from '@/lib/item'
 import { getCategories } from '@lib/categories'
 //import session from '@hooks/session'
 import AddDataForm from '@components/AddDataForm'
@@ -10,17 +11,14 @@ import UpdateDataForm from '@components/UpdateDataForm'
 
 
 /* Types */
-type Incomes = {
-    income_amount: number
-    income_description: string
-    income_id: string // This should be string or number?
-}
-
-type Expenses = {
-    expense_amount: number
-    expense_description: string
-    expense_id: string
+type Transactions = {
+    amount: number
+    description: string
+    id: string
     category_id: number
+    created_at: number
+    user_id: number
+    type: 'incomes' | 'expenses'
 }
 
 type Categories = {
@@ -33,16 +31,19 @@ export default function Home() {
     //session() --> When home button is pressed automatically changes to authentication page. This should be fixed
 
     // States for new data
-    const [newAmount, setNewAmount] = useState<string>('') 
+    const [newAmount, setNewAmount] = useState<string>('')
     const [newDescription, setNewDescription] = useState<string | null>('')
 
+    // Listing all the data
+    const [transactionItems, setTransactionItems] = useState<Transactions[]>([])
 
-    const [incomes, setIncomes] = useState<Incomes[]>([])
+
+    //const [incomes, setIncomes] = useState<Incomes[]>([])
     const [incomeAmount, setIncomeAmount] = useState<number>(0)
     const [incomeDescription, setIncomeDescription] = useState<string>('')
 
-    
-    const [expenses, setExpenses] = useState<Expenses[]>([])
+
+    //const [expenses, setExpenses] = useState<Expenses[]>([])
     const [expenseAmount, setExpenseAmount] = useState<number | null>()
     const [expenseDescription, setExpenseDescription] = useState<string | null>()
 
@@ -58,6 +59,15 @@ export default function Home() {
 
     /** State to tell if Popup should show Delete- or Update-functionality */
     const [popupState, setPopupState] = useState<'delete' | 'update' | null>(null);
+
+
+    /* Test for getting all the items for listing*/
+
+    const allItems = async () => {
+        const allitems = await getItems()
+        console.log("getIncomeData: ", allitems)
+        setTransactionItems(allitems)
+    }
 
     /** Get userId */
     const getUserId = async () => {
@@ -77,13 +87,13 @@ export default function Home() {
     const refreshIncomeList = async () => {
         const updatedData = await getIncome()
         console.log("getIncomeData: ", updatedData)
-        setIncomes(updatedData)
+        //setIncomes(updatedData)
     }
 
     /* Get Expenses */
     const refreshExpenseList = async () => {
         const updatedData = await getExpenses()
-        setExpenses(updatedData)
+        //setExpenses(updatedData)
     }
 
     /* Get categories */
@@ -92,10 +102,13 @@ export default function Home() {
         setCategories(categoriesData)
     }
 
+
+
     useEffect(() => {
         refreshIncomeList()
         refreshExpenseList()
         refreshCategoriesList()
+        allItems()
     }, [])
 
 
@@ -121,19 +134,25 @@ export default function Home() {
         console.log("Create item category id", selectedCategoryId)
 
         // if statement to choose which type if item user is creating
+        // if (type === 'income') {
+        //     createIncome(userId, number(newAmount), date, string(newDescription), number(selectedCategoryId)) // HUOM. change states
+        //     await refreshIncomeList()
+        // } else {
+        //     await createExpense(userId, number(newAmount), date, string(newDescription), number(selectedCategoryId))
+        //     await refreshExpenseList()
+        // }
+
+        await createItem(userId, Number(newAmount), date, String(newDescription), Number(selectedCategoryId), type)
+
         if (type === 'income') {
-            createIncome(userId, Number(newAmount), date, String(newDescription), Number(selectedCategoryId)) // HUOM. change states
             await refreshIncomeList()
-            setNewAmount('')
-            setNewDescription('')
-            setSelectedCategoryId('')
         } else {
-            await createExpense(userId, Number(newAmount), date, String(newDescription), Number(selectedCategoryId))
             await refreshExpenseList()
-            setNewAmount('')
-            setNewDescription('')
-            setSelectedCategoryId('')
         }
+
+        setNewAmount('')
+        setNewDescription('')
+        setSelectedCategoryId('')
 
     }
 
@@ -166,13 +185,13 @@ export default function Home() {
 
     }
 
-    /** Filter the categories */
+    /** Filter the categories 
 
     const categoryExpenses = useMemo(() => {
         if (typeof selectedCategoryId !== 'number') return [];
         return expenses.filter((e) => e.category_id === selectedCategoryId);
     }, [expenses, selectedCategoryId]);
-
+    */
 
     return (
         <div className="
@@ -192,6 +211,9 @@ export default function Home() {
                 lg:flex-row 
                 "
             >
+
+                { /** Test for listing all the items */}
+
                 {/* List of Incomes */}
                 <div className="
                     border border-stone-700 rounded-md
@@ -199,9 +221,12 @@ export default function Home() {
                     flex flex-col gap-5
                     "
                 >
-                    <h2 className="text-[20px]">Incomes</h2>
+
+
+
+                    <h2 className="text-[20px]">All items</h2>
                     <ul>
-                        {incomes.map((item, index) => (
+                        {transactionItems.map((item, index) => (
                             <li
                                 className="
                                     cursor-pointer
@@ -209,13 +234,13 @@ export default function Home() {
                                     text-[15px]    
                                 "
                                 key={index}
-                                onMouseEnter={() => setSelectedItem({ id: item.income_id, type: 'income' })}
+                                onMouseEnter={() => setSelectedItem({ id: item.id, type: 'income' })}
                                 onMouseLeave={() => { }}
                             >
-                                {item.income_amount} € {item.income_description}
+                                {item.amount} € {item.description}
 
                                 {/** Delete and update buttons for items */}
-                                {selectedItem.id === item.income_id && selectedItem.type === 'income' && (
+                                {selectedItem.id === item.id && selectedItem.type === 'income' && (
                                     <div className="
                                         py-[8px]
                                         flex flex-row gap-5
@@ -228,7 +253,7 @@ export default function Home() {
                                                 hover:text-sky-300
                                             "
                                             onClick={() => {
-                                                setSelectedItem({ id: item.income_id, type: 'income' })
+                                                setSelectedItem({ id: item.id, type: 'income' })
                                                 setShowPopup(true)
                                                 setPopupState('delete')
                                             }}
@@ -241,74 +266,11 @@ export default function Home() {
                                                 hover:text-sky-300
                                             "
                                             onClick={() => {
-                                                setSelectedItem({ id: item.income_id, type: 'income' })
+                                                setSelectedItem({ id: item.id, type: 'income' })
                                                 setShowPopup(true)
                                                 setPopupState('update')
-                                                setIncomeAmount(item.income_amount)
-                                                setIncomeDescription(item.income_description)
-                                            }}
-                                        >Update</button>
-                                    </div>
-                                )}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-
-
-                { /** List of expenses */}
-                <div className="
-                    border border-stone-700 rounded-md
-                    px-[40px] py-[35px]
-                    flex flex-col gap-5
-                    "
-                >
-                    <h2 className="text-[20px]">Expenses</h2>
-                    <ul>
-                        {expenses.map((item, index) => (
-                            <li
-                                className="
-                                    cursor-pointer
-                                    py-[8px]
-                                    text-[15px]
-                                "
-                                key={index}
-                                onMouseEnter={() => setSelectedItem({ id: item.expense_id, type: 'expense' })}
-                                onMouseLeave={() => { }} //setSelectedItem({ id: null, type: null })
-                            >
-                                {item.expense_amount} € {item.expense_description}
-
-                                {selectedItem.id === item.expense_id && selectedItem.type === 'expense' && (
-                                    <div className="
-                                        py-[8px]
-                                        flex flex-row gap-5
-                                        "
-                                    >
-                                        <button
-                                            className="
-                                                cursor-pointer
-                                                transition
-                                                hover:text-sky-300
-                                            "
-                                            onClick={() => {
-                                                setSelectedItem({ id: item.expense_id, type: 'expense' })
-                                                setShowPopup(true)
-                                                setPopupState('delete')
-                                            }}
-                                        >Delete</button>
-
-                                        <button
-                                            className="
-                                                cursor-pointer
-                                                transition
-                                                hover:text-sky-300
-                                            "
-                                            onClick={() => {
-                                                setSelectedItem({ id: item.expense_id, type: 'expense' })
-                                                setShowPopup(true)
-                                                setPopupState('update')
-                                                setExpenseAmount(item.expense_amount)
-                                                setExpenseDescription(item.expense_description)
+                                                setIncomeAmount(item.amount)
+                                                setIncomeDescription(item.description)
                                             }}
                                         >Update</button>
                                     </div>
@@ -390,8 +352,9 @@ export default function Home() {
                 <p>Selected Category id: {selectedCategoryId}</p>
 
 
+                {/*
 
-                <ul>
+                                <ul>
                     {categoryExpenses.length === 0 ? (
                         <li>This category does not include items.</li>
                     ) : (
@@ -405,6 +368,10 @@ export default function Home() {
                 <p>
                     Total for selected category: {categoryExpenses.reduce((sum, item) => sum + item.expense_amount, 0)} €
                 </p>
+                
+                
+                */}
+
             </div>
 
 
