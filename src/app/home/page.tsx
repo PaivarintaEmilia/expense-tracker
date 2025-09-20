@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { getIncome, createIncome, updateIncome, deleteIncome } from '@/lib/income'
 import { getExpenses, createExpense, updateExpense, deleteExpense } from '@/lib/expense'
-import { getItems, createItem } from '@/lib/item'
+import { getItems, createItem, deleteItem } from '@/lib/item'
 import { getCategories } from '@lib/categories'
 //import session from '@hooks/session'
 import AddDataForm from '@components/AddDataForm'
@@ -55,7 +55,7 @@ export default function Home() {
     // This might not be useful: const [hoveredId, setHoveredId] = useState<string | null>(null) 
     const [showPopup, setShowPopup] = useState<boolean>(false) // To activate and deactivate the popUp
     const [showAddForm, setShowAddForm] = useState<boolean>(false) // To activate and deactivate the correct form to add items
-    const [selectedItem, setSelectedItem] = useState<{ id: string | null, type: 'income' | 'expense' | null }>({ id: null, type: null }) // To get the id and type of the item. Used to pass correct id to delete or updaet functionality
+    const [selectedItem, setSelectedItem] = useState<{ id: string | null, type: 'incomes' | 'expenses' | null }>({ id: null, type: null }) // To get the id and type of the item. Used to pass correct id to delete or updaet functionality
 
     /** State to tell if Popup should show Delete- or Update-functionality */
     const [popupState, setPopupState] = useState<'delete' | 'update' | null>(null);
@@ -65,7 +65,8 @@ export default function Home() {
 
     const allItems = async () => {
         const allitems = await getItems()
-        console.log("getIncomeData: ", allitems)
+        console.log("Data when fetching all the items fron items.ts : ", allitems)
+        console.log("Data when fetching all the items first object, type : ", allitems[0].type)
         setTransactionItems(allitems)
     }
 
@@ -105,8 +106,8 @@ export default function Home() {
 
 
     useEffect(() => {
-        refreshIncomeList()
-        refreshExpenseList()
+        //refreshIncomeList()
+        //refreshExpenseList()
         refreshCategoriesList()
         allItems()
     }, [])
@@ -212,9 +213,7 @@ export default function Home() {
                 "
             >
 
-                { /** Test for listing all the items */}
-
-                {/* List of Incomes */}
+                {/* List of all items */}
                 <div className="
                     border border-stone-700 rounded-md
                     px-[40px] py-[35px]
@@ -234,13 +233,13 @@ export default function Home() {
                                     text-[15px]    
                                 "
                                 key={index}
-                                onMouseEnter={() => setSelectedItem({ id: item.id, type: 'income' })}
+                                onMouseEnter={() => setSelectedItem({ id: item.id, type: item.type })}
                                 onMouseLeave={() => { }}
                             >
-                                {item.amount} € {item.description}
+                                {item.amount}€, {item.description}, {item.type}
 
                                 {/** Delete and update buttons for items */}
-                                {selectedItem.id === item.id && selectedItem.type === 'income' && (
+                                {selectedItem.id === item.id && selectedItem.type === item.type && (
                                     <div className="
                                         py-[8px]
                                         flex flex-row gap-5
@@ -253,7 +252,7 @@ export default function Home() {
                                                 hover:text-sky-300
                                             "
                                             onClick={() => {
-                                                setSelectedItem({ id: item.id, type: 'income' })
+                                                setSelectedItem({ id: item.id, type: item.type })  // is this necessary as it's already stated
                                                 setShowPopup(true)
                                                 setPopupState('delete')
                                             }}
@@ -266,7 +265,7 @@ export default function Home() {
                                                 hover:text-sky-300
                                             "
                                             onClick={() => {
-                                                setSelectedItem({ id: item.id, type: 'income' })
+                                                setSelectedItem({ id: item.id, type: item.type })
                                                 setShowPopup(true)
                                                 setPopupState('update')
                                                 setIncomeAmount(item.amount)
@@ -411,18 +410,9 @@ export default function Home() {
                                     cursor-pointer
                                 "
                                 onClick={async () => {
-                                    if (selectedItem.type === 'income') {
-                                        await deleteIncome(Number(selectedItem.id))
-                                        await refreshIncomeList()
-                                        console.log('Income item deleted')
-
-                                    } else if (selectedItem.type === 'expense') {
-                                        await deleteExpense(Number(selectedItem.id))
-                                        await refreshExpenseList()
-                                        console.log('Expense item deleted')
-
-                                    }
-
+                                    await deleteItem(Number(selectedItem.id), String(selectedItem.type))
+                                    allItems() // Is this needed. Is the page reloaded after deletion?
+                                    console.log('Item deleted.')
                                     setShowPopup(false)
                                     setSelectedItem({ id: null, type: null })
                                 }}
@@ -482,7 +472,7 @@ export default function Home() {
                         "
                     >
 
-                        {selectedItem.type === 'income' ? (
+                        {selectedItem.type === 'incomes' ? (
                             <UpdateDataForm
                                 onSubmit={updateIncomeF}
                                 amountOnChange={(e) => setIncomeAmount(Number(e.target.value))}

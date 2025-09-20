@@ -8,7 +8,7 @@ export const getIncome = async () => {
         .select('income_amount, income_description, income_id')
 
     if (error || !incomes) {
-        console.error('There was an error while fetching the income data: ', error)
+        console.log('There was an error while fetching the income data: ', error)
         return []
     }
 
