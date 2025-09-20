@@ -40,11 +40,11 @@ export const getItems = async () => {
 }
 
 // Create Item
-export const createItem = async (user_id: string, amount: number, created_at: Date, description: string, category_id: number, type: any) => {
+export const createItem = async (user_id: string, amount: number, description: string, created_at: Date,  category_id: number, type: string) => {
     const { data: item, error } = await supabase
         .from(`${type}`)
         .insert([
-            { user_id, amount, created_at, description, category_id },
+            { user_id, category_id, amount, created_at, description },
         ])
         .select()
 

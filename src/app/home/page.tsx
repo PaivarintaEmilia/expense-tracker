@@ -134,23 +134,9 @@ export default function Home() {
         console.log("Create item desc", expenseDescription)
         console.log("Create item category id", selectedCategoryId)
 
-        // if statement to choose which type if item user is creating
-        // if (type === 'income') {
-        //     createIncome(userId, number(newAmount), date, string(newDescription), number(selectedCategoryId)) // HUOM. change states
-        //     await refreshIncomeList()
-        // } else {
-        //     await createExpense(userId, number(newAmount), date, string(newDescription), number(selectedCategoryId))
-        //     await refreshExpenseList()
-        // }
+        await createItem(userId, Number(newAmount), String(newDescription), date,  Number(selectedCategoryId), String(type))
 
-        await createItem(userId, Number(newAmount), date, String(newDescription), Number(selectedCategoryId), type)
-
-        if (type === 'income') {
-            await refreshIncomeList()
-        } else {
-            await refreshExpenseList()
-        }
-
+        allItems()
         setNewAmount('')
         setNewDescription('')
         setSelectedCategoryId('')
@@ -507,7 +493,7 @@ export default function Home() {
         </div >
     )
 }
-
+// 509 lines
 
 
 

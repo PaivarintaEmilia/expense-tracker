@@ -26,11 +26,11 @@ export default function AddDataForm({ onSubmit, amountOnChange, descriptionOnCha
                 <legend>Select the type:</legend>
                 <div>
                     <label htmlFor="income">
-                        <input type="radio" id="income" name="item_type" value="income" defaultChecked />
+                        <input type="radio" id="income" name="item_type" value="incomes" defaultChecked />
                         <span>Income</span>
                     </label>
                     <label htmlFor="expense">
-                        <input type="radio" id="expense" name="item_type" value="expense" />
+                        <input type="radio" id="expense" name="item_type" value="expenses" />
                         <span>Expense</span>
                     </label>
                 </div>
