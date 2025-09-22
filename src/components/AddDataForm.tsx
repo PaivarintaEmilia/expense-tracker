@@ -8,7 +8,7 @@ type IncomeData = {
     selectedCategoryOnChange: (e: React.ChangeEvent<HTMLSelectElement>) => void,
     amount: string,
     description: string,
-    categoryId: number | "",
+    categoryId: number | '',
     categoriesList: Categories[],
 }
 

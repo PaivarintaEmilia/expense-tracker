@@ -1,17 +1,20 @@
-//import supabase from '@lib/supabase'
+import { Categories } from '@lib/types/db'
 
 
 type IncomeData = {
     onSubmit: (e: React.FormEvent<HTMLFormElement>) => void,
     amountOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
     descriptionOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
+    categoryOnChange: (e: React.ChangeEvent<HTMLSelectElement>) => void,
     cancelFunction: () => void,
     amount: number,
     description: string,
+    categoryId: number | '',
+    categoriesList: Categories[],
 }
 
 
-export default function UpdateDataForm({ onSubmit, amountOnChange, descriptionOnChange, cancelFunction, amount, description }: IncomeData) {
+export default function UpdateDataForm({ onSubmit, amountOnChange, descriptionOnChange, categoryOnChange, cancelFunction, amount, description, categoryId, categoriesList }: IncomeData) {
     return (
         <div className="
             flex flex-col gap-5
@@ -56,6 +59,28 @@ export default function UpdateDataForm({ onSubmit, amountOnChange, descriptionOn
                     value={description}
                     onChange={descriptionOnChange}
                 />
+                {/** Select the category */}
+                <select
+                    className="
+                            w-full
+                            border border-neutral-600
+                            rounded-md
+                            px-3 py-2
+                            text-gray-200 font-light
+                            outline-none
+                            hover:border-gray-400
+                            focus:border-sky-200 focus:ring-0.5 focus:ring-sky-200
+                        "
+                    onChange={categoryOnChange}
+                    value={categoryId}
+                >
+                    <option value="">Select category</option>
+                    {categoriesList.map(option => (
+                        <option key={option.category_id} value={option.category_id}>
+                            {option.category_name}
+                        </option>
+                    ))}
+                </select>
                 <button
                     type="submit"
                     className="

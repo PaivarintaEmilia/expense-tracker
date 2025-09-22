@@ -4,7 +4,6 @@ import supabase from '@lib/supabase'
 // Get Item
 export const getItems = async () => {
 
-
     const [incomesR, expensesR] = await Promise.all([
         supabase
             .from(`incomes`)
@@ -34,9 +33,7 @@ export const getItems = async () => {
         type: 'expenses' as const
     }))
 
-
     return [...incomes, ...expenses]
-
 }
 
 // Create Item
@@ -57,24 +54,23 @@ export const createItem = async (user_id: string, amount: number, description: s
 
 
 // Update item
-export const updateItem = async (income_id: number, income_amount: number, income_description: string) => {
+export const updateItem = async (id: number, amount: number, description: string, category_id: number, type: string) => {
 
-    console.log('Updating income with ID:', income_id, typeof income_id)
+    console.log('Updating item with ID:', id, typeof id)
 
-    const { data: income, error } = await supabase
-        .from('incomes')
-        .update({ income_amount, income_description  })
-        .eq('income_id', income_id)
+    const { data: updatedItem, error } = await supabase
+        .from(`${type}`)
+        .update({ amount, description, category_id  })
+        .eq('id', id)
         .select()
 
     if (error) {
-        console.log("Error while updating Income item: ", error)
+        console.log("Error while updating item: ", error)
     }
 
-    console.log('Updated income data: ', income)
+    console.log('Updated item data from item.ts: ', updatedItem)
 
-    return "income, updated"
-
+    return "Item, updated"
 }
 
 
@@ -82,7 +78,6 @@ export const updateItem = async (income_id: number, income_amount: number, incom
 export const deleteItem = async (id: number, type: string) => {
 
     if (!id) return;
-    //const parsedId = parseInt(income_id, 10);
 
     const { error } = await supabase
         .from(`${type}`)
@@ -92,5 +87,4 @@ export const deleteItem = async (id: number, type: string) => {
     if (error) {
         console.log('Error while deleting income-table row: ', error)
     }
-
 }

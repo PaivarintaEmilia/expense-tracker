@@ -1,8 +1,6 @@
 'use client'
 import React, { useState, useEffect, useMemo } from 'react'
-import { getIncome, createIncome, updateIncome, deleteIncome } from '@/lib/income'
-import { getExpenses, createExpense, updateExpense, deleteExpense } from '@/lib/expense'
-import { getItems, createItem, deleteItem } from '@/lib/item'
+import { getItems, createItem, updateItem, deleteItem } from '@/lib/item'
 import { getCategories } from '@lib/categories'
 //import session from '@hooks/session'
 import AddDataForm from '@components/AddDataForm'
@@ -30,23 +28,18 @@ export default function Home() {
 
     //session() --> When home button is pressed automatically changes to authentication page. This should be fixed
 
-    // States for new data
+    // Creating new data
     const [newAmount, setNewAmount] = useState<string>('')
     const [newDescription, setNewDescription] = useState<string | null>('')
 
     // Listing all the data
     const [transactionItems, setTransactionItems] = useState<Transactions[]>([])
 
+    // Updatting items
+    const [itemAmount, setItemAmount] = useState<string>('')
+    const [itemDescription, setItemDescription] = useState<string>('')
 
-    //const [incomes, setIncomes] = useState<Incomes[]>([])
-    const [incomeAmount, setIncomeAmount] = useState<number>(0)
-    const [incomeDescription, setIncomeDescription] = useState<string>('')
-
-
-    //const [expenses, setExpenses] = useState<Expenses[]>([])
-    const [expenseAmount, setExpenseAmount] = useState<number | null>()
-    const [expenseDescription, setExpenseDescription] = useState<string | null>()
-
+    // Categories
     const [categories, setCategories] = useState<Categories[]>([])
     const [selectedCategoryId, setSelectedCategoryId] = useState<number | ''>('');
 
@@ -83,31 +76,13 @@ export default function Home() {
         return user
     }
 
-
-    /* Get Incomes */
-    const refreshIncomeList = async () => {
-        const updatedData = await getIncome()
-        console.log("getIncomeData: ", updatedData)
-        //setIncomes(updatedData)
-    }
-
-    /* Get Expenses */
-    const refreshExpenseList = async () => {
-        const updatedData = await getExpenses()
-        //setExpenses(updatedData)
-    }
-
     /* Get categories */
     const refreshCategoriesList = async () => {
         const categoriesData = await getCategories()
         setCategories(categoriesData)
     }
 
-
-
     useEffect(() => {
-        //refreshIncomeList()
-        //refreshExpenseList()
         refreshCategoriesList()
         allItems()
     }, [])
@@ -118,23 +93,24 @@ export default function Home() {
     const creatingItem = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        // Read the radio-input fields selection
+        // Get the radio-input fields value
         const formObject = new FormData(e.currentTarget)
         console.log("Type from radio while creating new item: ", formObject)
         const type = formObject.get('item_type')
 
-        const date = new Date();
+        const date = new Date()
 
         const user = await getUserId()
         const userId = user?.id
 
         console.log("Create item userID", userId)
-        console.log("Create item amount", expenseAmount)
+        console.log("Create item amount", newAmount)
         console.log("Create item date", date)
-        console.log("Create item desc", expenseDescription)
+        console.log("Create item desc", newDescription)
         console.log("Create item category id", selectedCategoryId)
+        console.log("Create item type", type)
 
-        await createItem(userId, Number(newAmount), String(newDescription), date,  Number(selectedCategoryId), String(type))
+        await createItem(userId, Number(newAmount), String(newDescription), date, Number(selectedCategoryId), String(type))
 
         allItems()
         setNewAmount('')
@@ -143,31 +119,21 @@ export default function Home() {
 
     }
 
-    /** Update Income */
-    const updateIncomeF = async (e: React.FormEvent<HTMLFormElement>) => {
+    /** Update item */
+    const updateItemF = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        console.log("update info: ", selectedItem.id, incomeAmount, incomeDescription)
+        console.log("Data of item to be updated: ")
 
-        await updateIncome(Number(selectedItem.id), incomeAmount, incomeDescription)
+        await updateItem(Number(selectedItem.id), Number(itemAmount), itemDescription, Number(selectedCategoryId), String(selectedItem.type))
 
-        await refreshIncomeList()
-        setShowPopup(false)
+        allItems()
+
         setSelectedItem({ id: null, type: null })
-        setPopupState(null)
-    }
-
-    /** Update Expense */
-    const updateExpenseF = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-
-        console.log("Update expense info: ", selectedItem.id, expenseAmount, expenseDescription)
-
-        await updateExpense(Number(selectedItem.id), Number(expenseAmount), String(expenseDescription))
-
-        await refreshExpenseList()
+        setItemAmount('')
+        setItemDescription('')
+        setSelectedCategoryId('')
         setShowPopup(false)
-        setSelectedItem({ id: null, type: null })
         setPopupState(null)
 
     }
@@ -254,8 +220,8 @@ export default function Home() {
                                                 setSelectedItem({ id: item.id, type: item.type })
                                                 setShowPopup(true)
                                                 setPopupState('update')
-                                                setIncomeAmount(item.amount)
-                                                setIncomeDescription(item.description)
+                                                setItemAmount(String(item.amount))
+                                                setItemDescription(item.description)
                                             }}
                                         >Update</button>
                                     </div>
@@ -432,7 +398,7 @@ export default function Home() {
                 </div>
 
             )}
-
+            {/** Update item popup */}
             {showPopup && selectedItem.id && popupState === 'update' && (
 
                 <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -442,6 +408,8 @@ export default function Home() {
                         onClick={() => {
                             setShowPopup(false)
                             setSelectedItem({ id: null, type: null })
+                            setItemAmount('')
+                            setItemDescription('')
                         }}
                     ></div>
 
@@ -457,39 +425,28 @@ export default function Home() {
                             p-6 md:p-7 lg:p-8 shadow-lg
                         "
                     >
-
-                        {selectedItem.type === 'incomes' ? (
-                            <UpdateDataForm
-                                onSubmit={updateIncomeF}
-                                amountOnChange={(e) => setIncomeAmount(Number(e.target.value))}
-                                descriptionOnChange={(e) => setIncomeDescription(e.target.value)}
-                                cancelFunction={() => {
-                                    setShowPopup(false)
-                                    setSelectedItem({ id: null, type: null })
-                                    setPopupState(null)
-                                }}
-                                amount={incomeAmount}
-                                description={incomeDescription}
-                            // Should we also add IncomeId here?
-                            ></UpdateDataForm>
-                        ) : (
-                            <UpdateDataForm
-                                onSubmit={updateExpenseF}
-                                amountOnChange={(e) => setExpenseAmount(Number(e.target.value))}
-                                descriptionOnChange={(e) => setExpenseDescription(e.target.value)}
-                                cancelFunction={() => {
-                                    setShowPopup(false)
-                                    setSelectedItem({ id: null, type: null })
-                                    setPopupState(null)
-                                }}
-                                amount={Number(expenseAmount)}
-                                description={String(expenseDescription)}
-                            // Should we also add ExpenseId here?
-                            ></UpdateDataForm>
-                        )}
+                        <UpdateDataForm
+                            onSubmit={updateItemF}
+                            amountOnChange={(e) => setItemAmount(e.target.value)}
+                            descriptionOnChange={(e) => setItemDescription(e.target.value)}
+                            cancelFunction={() => {
+                                setShowPopup(false)
+                                setSelectedItem({ id: null, type: null })
+                                setPopupState(null)
+                            } }
+                            amount={Number(itemAmount)}
+                            description={itemDescription} 
+                            categoryOnChange={(e) => {
+                                const value = parseInt(e.target.value)
+                                setSelectedCategoryId(value)
+                            }} 
+                            categoryId={selectedCategoryId} 
+                            categoriesList={categories}                        >
+                        </UpdateDataForm>
                     </div>
                 </div>
-            )}
+            )
+            }
         </div >
     )
 }
