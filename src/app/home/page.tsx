@@ -47,7 +47,6 @@ export default function Home() {
     /* UseStates for deletion/update-functionalities*/
     // This might not be useful: const [hoveredId, setHoveredId] = useState<string | null>(null) 
     const [showPopup, setShowPopup] = useState<boolean>(false) // To activate and deactivate the popUp
-    const [showAddForm, setShowAddForm] = useState<boolean>(false) // To activate and deactivate the correct form to add items
     const [selectedItem, setSelectedItem] = useState<{ id: string | null, type: 'incomes' | 'expenses' | null }>({ id: null, type: null }) // To get the id and type of the item. Used to pass correct id to delete or updaet functionality
 
     /** State to tell if Popup should show Delete- or Update-functionality */
@@ -138,13 +137,12 @@ export default function Home() {
 
     }
 
-    /** Filter the categories 
+    /** Filter the items by categories */
 
-    const categoryExpenses = useMemo(() => {
+    const filteredItems = useMemo(() => {
         if (typeof selectedCategoryId !== 'number') return [];
-        return expenses.filter((e) => e.category_id === selectedCategoryId);
-    }, [expenses, selectedCategoryId]);
-    */
+        return transactionItems.filter((e) => e.category_id === selectedCategoryId);
+    }, [transactionItems, selectedCategoryId]);
 
     return (
         <div className="
@@ -155,115 +153,8 @@ export default function Home() {
         >
 
             <h1 className="text-[35px]">Expense Tracker</h1>
-            {/** Lists of the items */}
-            <div className="
-                w-full
-                flex flex-col gap-12 justify-center
-                my-[35px]
-                px-[30px]
-                lg:flex-row 
-                "
-            >
 
-                {/* List of all items */}
-                <div className="
-                    border border-stone-700 rounded-md
-                    px-[40px] py-[35px]
-                    flex flex-col gap-5
-                    "
-                >
-
-
-
-                    <h2 className="text-[20px]">All items</h2>
-                    <ul>
-                        {transactionItems.map((item, index) => (
-                            <li
-                                className="
-                                    cursor-pointer
-                                    py-[8px]
-                                    text-[15px]    
-                                "
-                                key={index}
-                                onMouseEnter={() => setSelectedItem({ id: item.id, type: item.type })}
-                                onMouseLeave={() => { }}
-                            >
-                                {item.amount}€, {item.description}, {item.type}
-
-                                {/** Delete and update buttons for items */}
-                                {selectedItem.id === item.id && selectedItem.type === item.type && (
-                                    <div className="
-                                        py-[8px]
-                                        flex flex-row gap-5
-                                        "
-                                    >
-                                        <button
-                                            className="
-                                                cursor-pointer
-                                                transition
-                                                hover:text-sky-300
-                                            "
-                                            onClick={() => {
-                                                setSelectedItem({ id: item.id, type: item.type })  // is this necessary as it's already stated
-                                                setShowPopup(true)
-                                                setPopupState('delete')
-                                            }}
-                                        >Delete</button>
-
-                                        <button
-                                            className="
-                                                cursor-pointer
-                                                transition
-                                                hover:text-sky-300
-                                            "
-                                            onClick={() => {
-                                                setSelectedItem({ id: item.id, type: item.type })
-                                                setShowPopup(true)
-                                                setPopupState('update')
-                                                setItemAmount(String(item.amount))
-                                                setItemDescription(item.description)
-                                            }}
-                                        >Update</button>
-                                    </div>
-                                )}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            </div>
-
-
-
-            {/** Create items forms */}
-
-            <div className="
-                w-full
-                flex flex-col gap-20 justify-center items-center
-                mb-[100px]
-                lg:flex-row
-                "
-            >
-                {/** Create new item form */}
-                <div className="w-90">
-                    <h2 className="text-[20px] w-full text-center">Create a new Item</h2>
-                    <AddDataForm
-                        onSubmit={creatingItem}
-                        amountOnChange={(e) => setNewAmount(e.target.value)}
-                        descriptionOnChange={(e) => setNewDescription(e.target.value)}
-                        amount={newAmount}
-                        description={String(newDescription)}
-                        selectedCategoryOnChange={(e) => {
-                            const value = parseInt(e.target.value)
-                            setSelectedCategoryId(value)
-                        }}
-                        categoryId={selectedCategoryId}
-                        categoriesList={categories} />
-                </div>
-
-            </div>
-
-
-            {/** Categories */}
+            {/** Filters: categories... */}
 
             <div className="border border-lime-400 w-full flex flex-col justify-center items-center">
 
@@ -284,9 +175,7 @@ export default function Home() {
                         onChange={(e) => {
                             const value = parseInt(e.target.value)
                             setSelectedCategoryId(value)
-                        }
-
-                        }
+                        }}
                         value={selectedCategoryId}
                     >
                         <option value="">Select category</option>
@@ -302,154 +191,242 @@ export default function Home() {
 
                 <p>Selected Category id: {selectedCategoryId}</p>
 
+                {filteredItems.length === 0 ? (
+                    <p>No items found. Try to change filters.</p>
+                ) : (
+                    <div className="
+                        w-full
+                        flex flex-col gap-12 justify-center
+                        my-[35px]
+                        px-[30px]
+                        lg:flex-row"
+                    >
+                        {/** List of items */}
+                        <div className="
+                            border border-stone-700 rounded-md
+                            px-[40px] py-[35px]
+                            flex flex-col gap-5"
+                        >
+                            <h2 className="text-[20px]">All items</h2>
+                            <ul>
+                                {filteredItems.map((item, index) =>(
+                                    <li className="
+                                        cursor-pointer
+                                        py-[8px]
+                                        text-[15px]"
+                                        key={index}
+                                        onMouseEnter={() => setSelectedItem({ id: item.id, type: item.type })}
+                                        onMouseLeave={() => { }}
+                                    >
+                                        {item.amount}€, {item.description}, {item.type}, {item.category_id}
 
-                {/*
+                                        {/** Delete and update buttons for items */}
+                                        {selectedItem.id === item.id && selectedItem.type === item.type && (
+                                            <div className="
+                                                        py-[8px]
+                                                        flex flex-row gap-5
+                                                        "
+                                            >
+                                                <button
+                                                    className="
+                                                                cursor-pointer
+                                                                transition
+                                                                hover:text-sky-300
+                                                            "
+                                                    onClick={() => {
+                                                        setSelectedItem({ id: item.id, type: item.type })  // is this necessary as it's already stated
+                                                        setShowPopup(true)
+                                                        setPopupState('delete')
+                                                    }}
+                                                >Delete</button>
 
-                                <ul>
-                    {categoryExpenses.length === 0 ? (
-                        <li>This category does not include items.</li>
-                    ) : (
-                        categoryExpenses.map((item) => (
-                            <li key={item.expense_id}>
-                                {item.expense_amount} € {item.expense_description}
-                            </li>
-                        ))
-                    )}
-                </ul>
-                <p>
-                    Total for selected category: {categoryExpenses.reduce((sum, item) => sum + item.expense_amount, 0)} €
-                </p>
-                
-                
-                */}
+                                                <button
+                                                    className="
+                                                                cursor-pointer
+                                                                transition
+                                                                hover:text-sky-300
+                                                            "
+                                                    onClick={() => {
+                                                        setSelectedItem({ id: item.id, type: item.type })
+                                                        setShowPopup(true)
+                                                        setPopupState('update')
+                                                        setItemAmount(String(item.amount))
+                                                        setItemDescription(item.description)
+                                                    }}
+                                                >Update</button>
+                                            </div>
+                                        )}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                )}
 
             </div>
+
+
+
+
+            {/** Create items forms */}
+
+            <div className="
+                    w-full
+                    flex flex-col gap-20 justify-center items-center
+                    mb-[100px]
+                    lg:flex-row
+                    "
+            >
+                <div className="w-90">
+                    <h2 className="text-[20px] w-full text-center">Create a new Item</h2>
+                    <AddDataForm
+                        onSubmit={creatingItem}
+                        amountOnChange={(e) => setNewAmount(e.target.value)}
+                        descriptionOnChange={(e) => setNewDescription(e.target.value)}
+                        amount={newAmount}
+                        description={String(newDescription)}
+                        selectedCategoryOnChange={(e) => {
+                            const value = parseInt(e.target.value)
+                            setSelectedCategoryId(value)
+                        }}
+                        categoryId={selectedCategoryId}
+                        categoriesList={categories} />
+                </div>
+
+            </div>
+
+
+
 
 
             {/* Popup */}
 
             {/* When showPopup is true and selectedId is set --> show the popup*/}
-            {showPopup && selectedItem && popupState === 'delete' && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center">
-                    {/** Background of the page while Popup (is covering popup at the moment) */}
-                    <div
-                        className="absolute inset-0 bg-black/70"
-                        onClick={() => {
-                            setShowPopup(false)
-                            setSelectedItem({ id: null, type: null })
-                        }}
-                    ></div>
-
-                    {/** Popup card delete */}
-                    <div
-                        role="dialog"
-                        arial-modal="true"
-                        className="
-                            relative z-10 bg-stone-800
-                            border border-sky-300 rounded-md
-                            w-[92vw] max-w-[360px] md:max-w-[520px] lg:max-w-[640px]
-                            max-h-[85vh] overflow-y-auto
-                            p-6 md:p-7 lg:p-8 shadow-lg
-                        "
-                    >
-                        <p className="text-[16px] md:text-[18px] w-full text-center">Do you want to delete the item {selectedItem.id}?</p>
-                        <div className="mt-6 flex justify-center gap-5">
-                            <button
-                                className="             
-                                    inline-flex items-center
-                                    text-[18px] font-normal
-                                    mt-2
-                                    cursor-pointer
-                                "
-                                onClick={async () => {
-                                    await deleteItem(Number(selectedItem.id), String(selectedItem.type))
-                                    allItems() // Is this needed. Is the page reloaded after deletion?
-                                    console.log('Item deleted.')
-                                    setShowPopup(false)
-                                    setSelectedItem({ id: null, type: null })
-                                }}
-                            >Yes</button>
-                            <button
-                                className="
-                                    mt-2
-                                    inline-flex items-center justify-center
-                                    rounded-md
-                                    border border-sky-300
-                                    px-4 py-2
-                                    text-[15px] font-bold
-                                    text-white-900
-                                    transition
-                                    hover:bg-stone-700 hover:shadow 
-                                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200
-                                    active:translate-y-[1px]
-                                    disabled:opacity-50 disabled:cursor-not-allowed
-                                    cursor-pointer
-                                "
-                                onClick={() => {
-                                    setShowPopup(false)
-                                    setSelectedItem({ id: null, type: null })
-                                }}
-                            >Cancel</button>
-                        </div>
-
-
-                    </div>
-
-                </div>
-
-            )}
-            {/** Update item popup */}
-            {showPopup && selectedItem.id && popupState === 'update' && (
-
-                <div className="fixed inset-0 z-50 flex items-center justify-center">
-                    {/** Darker background */}
-                    <div
-                        className="absolute inset-0 bg-black/70"
-                        onClick={() => {
-                            setShowPopup(false)
-                            setSelectedItem({ id: null, type: null })
-                            setItemAmount('')
-                            setItemDescription('')
-                        }}
-                    ></div>
-
-                    {/** Popup card for updating items */}
-                    <div
-                        role="dialog"
-                        arial-modal="true"
-                        className="
-                            relative z-10 bg-stone-800
-                            border border-sky-300 rounded-md
-                            w-[92vw] max-w-[360px] md:max-w-[520px] lg:max-w-[640px]
-                            max-h-[85vh] overflow-y-auto
-                            p-6 md:p-7 lg:p-8 shadow-lg
-                        "
-                    >
-                        <UpdateDataForm
-                            onSubmit={updateItemF}
-                            amountOnChange={(e) => setItemAmount(e.target.value)}
-                            descriptionOnChange={(e) => setItemDescription(e.target.value)}
-                            cancelFunction={() => {
+            {
+                showPopup && selectedItem && popupState === 'delete' && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center">
+                        {/** Background of the page while Popup (is covering popup at the moment) */}
+                        <div
+                            className="absolute inset-0 bg-black/70"
+                            onClick={() => {
                                 setShowPopup(false)
                                 setSelectedItem({ id: null, type: null })
-                                setPopupState(null)
-                            } }
-                            amount={Number(itemAmount)}
-                            description={itemDescription} 
-                            categoryOnChange={(e) => {
-                                const value = parseInt(e.target.value)
-                                setSelectedCategoryId(value)
-                            }} 
-                            categoryId={selectedCategoryId} 
-                            categoriesList={categories}                        >
-                        </UpdateDataForm>
+                            }}
+                        ></div>
+
+                        {/** Popup card delete */}
+                        <div
+                            role="dialog"
+                            aria-modal="true"
+                            className="
+                                relative z-10 bg-stone-800
+                                border border-sky-300 rounded-md
+                                w-[92vw] max-w-[360px] md:max-w-[520px] lg:max-w-[640px]
+                                max-h-[85vh] overflow-y-auto
+                                p-6 md:p-7 lg:p-8 shadow-lg
+                            "
+                        >
+                            <p className="text-[16px] md:text-[18px] w-full text-center">Do you want to delete the item {selectedItem.id}?</p>
+                            <div className="mt-6 flex justify-center gap-5">
+                                <button
+                                    className="             
+                                        inline-flex items-center
+                                        text-[18px] font-normal
+                                        mt-2
+                                        cursor-pointer
+                                    "
+                                    onClick={async () => {
+                                        await deleteItem(Number(selectedItem.id), String(selectedItem.type))
+                                        allItems() // Is this needed. Is the page reloaded after deletion?
+                                        console.log('Item deleted.')
+                                        setShowPopup(false)
+                                        setSelectedItem({ id: null, type: null })
+                                    }}
+                                >Yes</button>
+                                <button
+                                    className="
+                                        mt-2
+                                        inline-flex items-center justify-center
+                                        rounded-md
+                                        border border-sky-300
+                                        px-4 py-2
+                                        text-[15px] font-bold
+                                        text-white-900
+                                        transition
+                                        hover:bg-stone-700 hover:shadow 
+                                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200
+                                        active:translate-y-[1px]
+                                        disabled:opacity-50 disabled:cursor-not-allowed
+                                        cursor-pointer
+                                    "
+                                    onClick={() => {
+                                        setShowPopup(false)
+                                        setSelectedItem({ id: null, type: null })
+                                    }}
+                                >Cancel</button>
+                            </div>
+
+
+                        </div>
+
                     </div>
-                </div>
-            )
+
+                )
+            }
+            {/** Update item popup */}
+            {
+                showPopup && selectedItem.id && popupState === 'update' && (
+
+                    <div className="fixed inset-0 z-50 flex items-center justify-center">
+                        {/** Darker background */}
+                        <div
+                            className="absolute inset-0 bg-black/70"
+                            onClick={() => {
+                                setShowPopup(false)
+                                setSelectedItem({ id: null, type: null })
+                                setItemAmount('')
+                                setItemDescription('')
+                            }}
+                        ></div>
+
+                        {/** Popup card for updating items */}
+                        <div
+                            role="dialog"
+                            aria-modal="true"
+                            className="
+                                relative z-10 bg-stone-800
+                                border border-sky-300 rounded-md
+                                w-[92vw] max-w-[360px] md:max-w-[520px] lg:max-w-[640px]
+                                max-h-[85vh] overflow-y-auto
+                                p-6 md:p-7 lg:p-8 shadow-lg
+                            "
+                        >
+                            <UpdateDataForm
+                                onSubmit={updateItemF}
+                                amountOnChange={(e) => setItemAmount(e.target.value)}
+                                descriptionOnChange={(e) => setItemDescription(e.target.value)}
+                                cancelFunction={() => {
+                                    setShowPopup(false)
+                                    setSelectedItem({ id: null, type: null })
+                                    setPopupState(null)
+                                }}
+                                amount={Number(itemAmount)}
+                                description={itemDescription}
+                                categoryOnChange={(e) => {
+                                    const value = parseInt(e.target.value)
+                                    setSelectedCategoryId(value)
+                                }}
+                                categoryId={selectedCategoryId}
+                                categoriesList={categories}                        >
+                            </UpdateDataForm>
+                        </div>
+                    </div>
+                )
             }
         </div >
     )
 }
+// 452 lines
 // 509 lines
 
 
