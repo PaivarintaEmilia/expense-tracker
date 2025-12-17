@@ -161,6 +161,7 @@ export default function Home() {
                 <h2 className="text-[23px] mb-[35px]">Categories</h2>
 
                 <form className="w-[300px] mb-[35px]">
+                    <label>Category</label>
                     <select
                         className="
                             w-full
@@ -186,7 +187,20 @@ export default function Home() {
                         ))}
                     </select>
 
-                    {/** Add later option to choose incomes or expenses and a timeframe */}
+                    {/** Select type incomes or expenses */}
+                    <fieldset>
+                        <legend>Select the type:</legend>
+                        <div>
+                            <label htmlFor="income">
+                                <input type="radio" id="income" name="item_type" value="incomes" defaultChecked />
+                                <span>Income</span>
+                            </label>
+                            <label htmlFor="expense">
+                                <input type="radio" id="expense" name="item_type" value="expenses" />
+                                <span>Expense</span>
+                            </label>
+                        </div>
+                    </fieldset>
                 </form>
 
                 <p>Selected Category id: {selectedCategoryId}</p>
@@ -209,7 +223,7 @@ export default function Home() {
                         >
                             <h2 className="text-[20px]">All items</h2>
                             <ul>
-                                {filteredItems.map((item, index) =>(
+                                {filteredItems.map((item, index) => (
                                     <li className="
                                         cursor-pointer
                                         py-[8px]
@@ -259,6 +273,9 @@ export default function Home() {
                                     </li>
                                 ))}
                             </ul>
+                            <p>
+                                Total amount of selected items: {filteredItems.reduce((sum, item) => sum + item.amount, 0)} €
+                            </p>
                         </div>
                     </div>
                 )}

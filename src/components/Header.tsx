@@ -70,6 +70,7 @@ export default function Header() {
                         transition
                         hover:font-bold cursor-pointer
                         "
+                    onClick={() => {supabase.auth.signOut}}
                 >Sign Out</button>
                 {/** <button onClick={() => {supabase.auth.signOut}}>Sign Out</button> */}
             </nav>
