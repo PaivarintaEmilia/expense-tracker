@@ -6,6 +6,7 @@ import { getCategories } from '@lib/categories'
 import AddDataForm from '@components/AddDataForm'
 import supabase from '@/lib/supabase'
 import UpdateDataForm from '@components/UpdateDataForm'
+import { useRouter } from 'next/navigation'
 
 
 /* Types */
@@ -26,7 +27,13 @@ type Categories = {
 
 export default function Home() {
 
-    //session() --> When home button is pressed automatically changes to authentication page. This should be fixed
+    const router = useRouter()
+
+    useEffect(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (!session) router.replace('/authentication')
+        })
+    }, [router])
 
     // Creating new data
     const [newAmount, setNewAmount] = useState<string>('')

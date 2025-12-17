@@ -1,18 +1,24 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import supabase from '@lib/supabase'
-//import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 
 
 export default function Login() {
 
+    const router = useRouter()
+
+    useEffect(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session) router.replace('/home')
+        })
+    }, [router])
+
 
     const [email, setEmail] = useState('')
     const [error, setError] = useState<string | null>(null)
     let successMessage = ''
-
-    //const router = useRouter()
 
 
     const handleEmailRegistration = async (e: React.FormEvent) => {

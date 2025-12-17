@@ -2,11 +2,25 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import supabase from '@lib/supabase'
+import { useRouter } from 'next/navigation'
 
 
 
 
 export default function Header() {
+
+    // User logout-functionality
+    const router = useRouter()
+
+    async function signOut() {
+        const { error } = await supabase.auth.signOut()
+        if (error) {
+            console.error(error.message)
+            return
+        }
+        console.log(`User signed out`)
+        router.replace('/authentication')
+    }
 
     const [loggedIn, setLoggedIn] = useState(false)
 
@@ -22,6 +36,8 @@ export default function Header() {
         return () => sub.subscription.unsubscribe()
     }, [])
 
+
+
     return (
         <div className="mt-[10px] px-[10px]">
             <nav
@@ -32,9 +48,10 @@ export default function Header() {
                     lg:justify-end 
                 "
             >
-                <Link
-                    href="/authentication"
-                    className="
+                {!loggedIn &&
+                    <Link
+                        href="/authentication"
+                        className="
                         mt-2
                         inline-flex items-center justify-center
                         rounded-md
@@ -50,7 +67,10 @@ export default function Header() {
                         active:translate-y-[1px]
                         disabled:opacity-50 disabled:cursor-not-allowed
                     "
-                >Login</Link>
+                    >Login</Link>
+
+                }
+
                 {loggedIn &&
                     <Link
                         href="/home"
@@ -63,16 +83,17 @@ export default function Header() {
                     >Home</Link>
                 }
 
-                <button
-                    className="
+                {loggedIn &&
+                    <button
+                        className="
                         inline-flex items-center
                         text-[18px] font-normal 
                         transition
                         hover:font-bold cursor-pointer
                         "
-                    onClick={() => {supabase.auth.signOut}}
-                >Sign Out</button>
-                {/** <button onClick={() => {supabase.auth.signOut}}>Sign Out</button> */}
+                        onClick={signOut}
+                    >Sign Out!!</button>
+                }
             </nav>
         </div>
     )
