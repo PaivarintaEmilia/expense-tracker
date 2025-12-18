@@ -52,6 +52,7 @@ export default function Home() {
     // Updating items
     const [itemAmount, setItemAmount] = useState<string>('')
     const [itemDescription, setItemDescription] = useState<string>('')
+    const [updateCategoryId, setUpdateCategoryId] = useState<number | ''>('')
 
     // Categories
     const [categories, setCategories] = useState<Categories[]>([])
@@ -138,7 +139,7 @@ export default function Home() {
 
         console.log("Data of item to be updated: ")
 
-        await updateItem(Number(selectedItem.id), Number(itemAmount), itemDescription, Number(selectedCategoryId), String(selectedItem.type))
+        await updateItem(Number(selectedItem.id), Number(itemAmount), itemDescription, Number(updateCategoryId), String(selectedItem.type))
 
         allItems()
 
@@ -151,7 +152,7 @@ export default function Home() {
 
     }
 
-    /** Filter the items by categories */
+    /** Filter the items by selected filters */
 
     const filteredItems = useMemo(() => {
         //if (typeof selectedCategoryId !== 'number') return [];
@@ -347,6 +348,7 @@ export default function Home() {
                                                         setPopupState('update')
                                                         setItemAmount(String(item.amount))
                                                         setItemDescription(item.description)
+                                                        setUpdateCategoryId(item.category_id)
                                                     }}
                                                 >Update</button>
                                             </div>
@@ -355,7 +357,7 @@ export default function Home() {
                                 ))}
                             </ul>
                             <p>
-                                Total amount of selected items: {filteredItems.reduce((sum, item) => sum + item.amount, 0)} €
+                                Total amount of selected items: {totalAmount} €
                             </p>
                         </div>
                     </div>
@@ -512,10 +514,10 @@ export default function Home() {
                                 description={itemDescription}
                                 categoryOnChange={(e) => {
                                     const value = parseInt(e.target.value)
-                                    setSelectedCategoryId(value)
+                                    setUpdateCategoryId(value)
                                 }}
-                                categoryId={selectedCategoryId}
-                                categoriesList={categories}                        >
+                                categoryId={updateCategoryId}
+                                categoriesList={categories}>
                             </UpdateDataForm>
                         </div>
                     </div>
