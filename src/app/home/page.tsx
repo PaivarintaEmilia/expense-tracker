@@ -15,7 +15,7 @@ type Transactions = {
     description: string
     id: string
     category_id: number
-    created_at: number
+    created_at: number | string
     user_id: number
     type: 'incomes' | 'expenses'
 }
@@ -27,6 +27,7 @@ type Categories = {
 
 export default function Home() {
 
+    // Redirecting based onif the user is logged in or not
     const router = useRouter()
 
     useEffect(() => {
@@ -35,6 +36,12 @@ export default function Home() {
         })
     }, [router])
 
+    // States for filtering data
+    const [searchCategoryId, setSearchCategoryId] = useState<number | ''>('') // Categories
+    const [searchType, setSearchType] = useState<'incomes' | 'expenses'>('expenses') // Item types
+    const [startDate, setStartDate] = useState<string>('') // Start date
+    const [endDate, setEndDate] = useState<string>('') // End date
+
     // Creating new data
     const [newAmount, setNewAmount] = useState<string>('')
     const [newDescription, setNewDescription] = useState<string | null>('')
@@ -42,7 +49,7 @@ export default function Home() {
     // Listing all the data
     const [transactionItems, setTransactionItems] = useState<Transactions[]>([])
 
-    // Updatting items
+    // Updating items
     const [itemAmount, setItemAmount] = useState<string>('')
     const [itemDescription, setItemDescription] = useState<string>('')
 
@@ -147,9 +154,36 @@ export default function Home() {
     /** Filter the items by categories */
 
     const filteredItems = useMemo(() => {
-        if (typeof selectedCategoryId !== 'number') return [];
-        return transactionItems.filter((e) => e.category_id === selectedCategoryId);
-    }, [transactionItems, selectedCategoryId]);
+        //if (typeof selectedCategoryId !== 'number') return [];
+        return transactionItems.filter((item) => {
+            // Category
+            if (typeof searchCategoryId === 'number' && item.category_id !== searchCategoryId) {
+                return false
+            }
+
+            // Type
+            if (item.type !== searchType) {
+                return false
+            }
+
+            // Selected dates
+            if (startDate || endDate) {
+                const itemDate = item.created_at
+                if (!itemDate) return false // jos päivää ei saa tulkittua, jätetään pois
+
+                if (startDate && itemDate < startDate) return false
+                if (endDate && itemDate > endDate) return false
+            }
+
+            return true
+
+        });
+    }, [transactionItems, searchCategoryId, searchType, startDate, endDate]);
+
+    // Calculate total amount for listed items
+    const totalAmount = useMemo(() => {
+        return filteredItems.reduce((sum, item) => sum + item.amount, 0)
+    }, [filteredItems])
 
     return (
         <div className="
@@ -161,12 +195,12 @@ export default function Home() {
 
             <h1 className="text-[35px]">Expense Tracker</h1>
 
-            {/** Filters: categories... */}
+            {/** Filters */}
 
             <div className="border border-lime-400 w-full flex flex-col justify-center items-center">
 
-                <h2 className="text-[23px] mb-[35px]">Categories</h2>
-
+                <h2 className="text-[23px] mb-[35px]">Search items</h2>
+                {/** Filter for categories */}
                 <form className="w-[300px] mb-[35px]">
                     <label>Category</label>
                     <select
@@ -182,9 +216,9 @@ export default function Home() {
                         "
                         onChange={(e) => {
                             const value = parseInt(e.target.value)
-                            setSelectedCategoryId(value)
+                            setSearchCategoryId(value)
                         }}
-                        value={selectedCategoryId}
+                        value={searchCategoryId}
                     >
                         <option value="">Select category</option>
                         {categories.map(option => (
@@ -194,24 +228,64 @@ export default function Home() {
                         ))}
                     </select>
 
-                    {/** Select type incomes or expenses */}
+                    {/**Filter for select type incomes or expenses */}
                     <fieldset>
                         <legend>Select the type:</legend>
                         <div>
                             <label htmlFor="income">
-                                <input type="radio" id="income" name="item_type" value="incomes" defaultChecked />
+                                <input
+                                    type="radio"
+                                    id="income"
+                                    name="item_type"
+                                    value="incomes"
+                                    checked={searchType === 'incomes'}
+                                    onChange={() => setSearchType('incomes')}
+                                />
                                 <span>Income</span>
                             </label>
                             <label htmlFor="expense">
-                                <input type="radio" id="expense" name="item_type" value="expenses" />
+                                <input
+                                    type="radio"
+                                    id="expense"
+                                    name="item_type"
+                                    value="expenses"
+                                    checked={searchType === 'expenses'}
+                                    onChange={() => setSearchType('expenses')}
+                                />
                                 <span>Expense</span>
                             </label>
                         </div>
                     </fieldset>
+                    {/** Filter for selecting dates */}
+                    <label>Time range</label>
+
+                    <div className="flex gap-3">
+                        <div className="flex flex-col gap-1 w-1/2">
+                            <span className="text-[12px] text-gray-300">From</span>
+                            <input
+                                type="date"
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                className="border border-neutral-600 rounded-md px-3 py-2 bg-transparent"
+                            />
+                        </div>
+
+                        <div className="flex flex-col gap-1 w-1/2">
+                            <span className="text-[12px] text-gray-300">To</span>
+                            <input
+                                type="date"
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                                className="border border-neutral-600 rounded-md px-3 py-2 bg-transparent"
+                            />
+                        </div>
+                    </div>
+
                 </form>
 
-                <p>Selected Category id: {selectedCategoryId}</p>
+                <p>Selected Category id: {selectedCategoryId}</p> {/** Delete later */}
 
+                {/** List of items */}
                 {filteredItems.length === 0 ? (
                     <p>No items found. Try to change filters.</p>
                 ) : (
@@ -222,13 +296,13 @@ export default function Home() {
                         px-[30px]
                         lg:flex-row"
                     >
-                        {/** List of items */}
+                        
                         <div className="
                             border border-stone-700 rounded-md
                             px-[40px] py-[35px]
                             flex flex-col gap-5"
                         >
-                            <h2 className="text-[20px]">All items</h2>
+                            <h2 className="text-[20px]">Items</h2>
                             <ul>
                                 {filteredItems.map((item, index) => (
                                     <li className="
@@ -450,7 +524,7 @@ export default function Home() {
         </div >
     )
 }
-// 452 lines
+// 454 lines
 // 509 lines
 
 
