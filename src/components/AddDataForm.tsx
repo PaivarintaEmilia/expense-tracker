@@ -25,13 +25,24 @@ export default function AddDataForm({ onSubmit, amountOnChange, descriptionOnCha
             onSubmit={onSubmit}>
             <fieldset>
                 <legend>Select the type:</legend>
-                <div>
+                <div className="mt-[8px]">
                     <label htmlFor="income">
-                        <input type="radio" id="income" name="item_type" value="incomes" defaultChecked />
+                        <input 
+                            type="radio" 
+                            id="income" 
+                            name="item_type" 
+                            value="incomes" 
+                            className="w-3 h-3 mr-[5px] text-neutral-primary border-default-medium bg-neutral-secondary-medium rounded-full checked:bg-blue-500 focus:ring-1 focus:outline-none focus:ring-brand-subtle border border-b-blue-100 appearance-none"
+                            defaultChecked />
                         <span>Income</span>
                     </label>
                     <label htmlFor="expense">
-                        <input type="radio" id="expense" name="item_type" value="expenses" />
+                        <input 
+                            type="radio" 
+                            id="expense" 
+                            name="item_type" 
+                            className="w-3 h-3 mr-[5px] ml-[8px] text-neutral-primary border-default-medium bg-neutral-secondary-medium rounded-full checked:bg-blue-500 focus:ring-1 focus:outline-none focus:ring-brand-subtle border border-b-blue-100 appearance-none"
+                            value="expenses" />
                         <span>Expense</span>
                     </label>
                 </div>

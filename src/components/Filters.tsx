@@ -53,6 +53,7 @@ export default function Filters(
                                 outline-none
                                 hover:border-gray-400
                                 focus:border-sky-200 focus:ring-0.5 focus:ring-sky-200
+                                mt-[10px]
                             "
                     onChange={(e) => {
                         const value = parseInt(e.target.value)
@@ -80,8 +81,8 @@ export default function Filters(
                 </select>
 
                 {/**Filter for select type incomes or expenses */}
-                <fieldset>
-                    <legend>Select the type:</legend>
+                <fieldset className="mt-[10px] mb-[10px]">
+                    <legend >Select the type:</legend>
                     <div>
                         <label htmlFor="income">
                             <input
@@ -91,6 +92,7 @@ export default function Filters(
                                 value="incomes"
                                 checked={searchType === 'incomes'}
                                 onChange={() => setSearchType('incomes')}
+                                className="w-3 h-3 mr-[5px] mt-[10px] text-neutral-primary border-default-medium bg-neutral-secondary-medium rounded-full checked:bg-blue-500 focus:ring-1 focus:outline-none focus:ring-brand-subtle border border-b-blue-100 appearance-none"
                             />
                             <span>Income</span>
                         </label>
@@ -102,6 +104,7 @@ export default function Filters(
                                 value="expenses"
                                 checked={searchType === 'expenses'}
                                 onChange={() => setSearchType('expenses')}
+                                className="w-3 h-3 mr-[5px] ml-[8px] text-neutral-primary border-default-medium bg-neutral-secondary-medium rounded-full checked:bg-blue-500 focus:ring-1 focus:outline-none focus:ring-brand-subtle border border-b-blue-100 appearance-none"
                             />
                             <span>Expense</span>
                         </label>
@@ -110,7 +113,7 @@ export default function Filters(
                 {/** Filter for selecting dates */}
                 <label>Time range</label>
 
-                <div className="flex gap-3">
+                <div className="flex gap-3 mt-[10px] mb-[10px]">
                     <div className="flex flex-col gap-1 w-1/2">
                         <span className="text-[12px] text-gray-300">From</span>
                         <input

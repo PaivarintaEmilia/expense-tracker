@@ -45,7 +45,6 @@ export default function Listing(
                 <div className="
                         w-full
                         flex flex-col gap-12 justify-center
-                        my-[35px]
                         px-[30px]
                         lg:flex-row"
                 >
