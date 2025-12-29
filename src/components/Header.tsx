@@ -48,7 +48,8 @@ export default function Header() {
                     lg:justify-end 
                 "
             >
-                {!loggedIn &&
+
+                {loggedIn &&
                     <Link
                         href="/authentication"
                         className="
@@ -57,7 +58,7 @@ export default function Header() {
                         rounded-md
                         border border-sky-300
                         px-4 py-2
-                        text-[15px] font-bold
+                        text-[18px] font-bold
                         text-white-900
                         mb-[3px]
                         bg-sky-600
@@ -66,33 +67,9 @@ export default function Header() {
                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300
                         active:translate-y-[1px]
                         disabled:opacity-50 disabled:cursor-not-allowed
-                    "
-                    >Login</Link>
-
-                }
-
-                {loggedIn &&
-                    <Link
-                        href="/home"
-                        className="
-                        inline-flex items-center
-                        text-[18px] font-normal
-                        transition
-                        hover:font-bold
-                        "
-                    >Home</Link>
-                }
-
-                {loggedIn &&
-                    <button
-                        className="
-                        inline-flex items-center
-                        text-[18px] font-normal 
-                        transition
-                        hover:font-bold cursor-pointer
                         "
                         onClick={signOut}
-                    >Sign Out!!</button>
+                    >Sign Out</Link>
                 }
             </nav>
         </div>
