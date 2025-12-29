@@ -6,6 +6,7 @@ type IncomeData = {
     amountOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
     descriptionOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
     selectedCategoryOnChange: (e: React.ChangeEvent<HTMLSelectElement>) => void,
+    createCategory: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void,
     amount: string,
     description: string,
     categoryId: number | '',
@@ -13,7 +14,7 @@ type IncomeData = {
 }
 
 
-export default function AddDataForm({ onSubmit, amountOnChange, descriptionOnChange, selectedCategoryOnChange, amount, description, categoryId, categoriesList }: IncomeData) {
+export default function AddDataForm({ onSubmit, amountOnChange, descriptionOnChange, selectedCategoryOnChange, createCategory, amount, description, categoryId, categoriesList }: IncomeData) {
     return (
         <form
             className="
@@ -81,22 +82,40 @@ export default function AddDataForm({ onSubmit, amountOnChange, descriptionOnCha
                             w-full
                             border border-neutral-600
                             rounded-md
-                            px-3 py-2
+                            px-3 py-2 pr-10
                             text-gray-200 font-light
                             outline-none
                             hover:border-gray-400
                             focus:border-sky-200 focus:ring-0.5 focus:ring-sky-200
+                            transition
+                            appearance-none
                         "
                 onChange={selectedCategoryOnChange}
                 value={categoryId}
             >
-                <option value="">Select category</option>
+                <option 
+                    value=""
+                    className="bg-neutral-800 text-white"
+                >Select category</option>
                 {categoriesList.map(option => (
-                    <option key={option.category_id} value={option.category_id}>
+                    <option 
+                        key={option.category_id} 
+                        value={option.category_id}
+                        className="
+                            bg-neutral-800 
+                            text-white
+                            checked:bg-sky-900 checked:text-neutral-200
+                        "
+                    >
                         {option.category_name}
                     </option>
                 ))}
             </select>
+            {/** Trigger new category Popup */}
+            <button
+                onClick={createCategory}
+            >
+            Create new category</button>
 
             <button
                 type="submit"

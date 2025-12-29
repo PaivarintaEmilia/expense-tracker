@@ -40,8 +40,16 @@ export default function RootLayout({
           {children}
         </div>
 
-        <div className="">
-          footer
+        <div className="
+          flex 
+          flex-col
+          items-center 
+          align-middle 
+          gap-15
+          w-100%
+          h-15
+        ">
+          <p>Emilia Päivärinta | ©2025</p>
         </div>
       </body>
     </html>

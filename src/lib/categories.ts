@@ -17,4 +17,21 @@ export const getCategories = async () => {
     return categories
 }
 
+/** Create a new category */
+export const createCategories = async (category_name: string) => {
+
+    const { data: category, error } = await supabase
+        .from('categories')
+        .insert([
+            { category_name, user_defined: true },
+        ])
+        .select()
+
+    if (error) {
+        console.log(`Insert category error | categories.ts: `, error)
+    }
+
+    return category
+}
+
 

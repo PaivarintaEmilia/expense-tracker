@@ -1,12 +1,14 @@
 'use client'
 import React, { useState, useEffect, useMemo } from 'react'
 import { getItems, createItem, updateItem, deleteItem } from '@/lib/item'
-import { getCategories } from '@lib/categories'
+import { getCategories, createCategories } from '@lib/categories'
 //import session from '@hooks/session'
 import AddDataForm from '@components/AddDataForm'
 import supabase from '@/lib/supabase'
 import UpdateDataForm from '@components/UpdateDataForm'
 import { useRouter } from 'next/navigation'
+import Filters from '@/components/Filters'
+import Listing from '@/components/Listing'
 
 
 /* Types */
@@ -57,6 +59,7 @@ export default function Home() {
     // Categories
     const [categories, setCategories] = useState<Categories[]>([])
     const [selectedCategoryId, setSelectedCategoryId] = useState<number | ''>('');
+    const [newCategory, setNewCategory] = useState<string>('')
 
 
     /* UseStates for deletion/update-functionalities*/
@@ -65,7 +68,7 @@ export default function Home() {
     const [selectedItem, setSelectedItem] = useState<{ id: string | null, type: 'incomes' | 'expenses' | null }>({ id: null, type: null }) // To get the id and type of the item. Used to pass correct id to delete or updaet functionality
 
     /** State to tell if Popup should show Delete- or Update-functionality */
-    const [popupState, setPopupState] = useState<'delete' | 'update' | null>(null);
+    const [popupState, setPopupState] = useState<'delete' | 'update' | 'createCategory' | null>(null);
 
 
     /* Test for getting all the items for listing*/
@@ -155,7 +158,7 @@ export default function Home() {
     /** Filter the items by selected filters */
 
     const filteredItems = useMemo(() => {
-        //if (typeof selectedCategoryId !== 'number') return [];
+
         return transactionItems.filter((item) => {
             // Category
             if (typeof searchCategoryId === 'number' && item.category_id !== searchCategoryId) {
@@ -170,7 +173,7 @@ export default function Home() {
             // Selected dates
             if (startDate || endDate) {
                 const itemDate = item.created_at
-                if (!itemDate) return false // jos päivää ei saa tulkittua, jätetään pois
+                if (!itemDate) return false // if date is not readable
 
                 if (startDate && itemDate < startDate) return false
                 if (endDate && itemDate > endDate) return false
@@ -186,6 +189,14 @@ export default function Home() {
         return filteredItems.reduce((sum, item) => sum + item.amount, 0)
     }, [filteredItems])
 
+    // Create new category
+    const createNewCategory = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        console.log(`CreateNewCategory called`)
+        await createCategories(String(newCategory))
+        setShowPopup(false)
+    }
+
     return (
         <div className="
             flex flex-col items-center gap-15
@@ -197,177 +208,38 @@ export default function Home() {
             <h1 className="text-[35px]">Expense Tracker</h1>
 
             {/** Filters */}
-
-            <div className="border border-lime-400 w-full flex flex-col justify-center items-center">
-
-                <h2 className="text-[23px] mb-[35px]">Search items</h2>
-                {/** Filter for categories */}
-                <form className="w-[300px] mb-[35px]">
-                    <label>Category</label>
-                    <select
-                        className="
-                            w-full
-                            border border-neutral-600
-                            rounded-md
-                            px-3 py-2
-                            text-gray-200 font-light
-                            outline-none
-                            hover:border-gray-400
-                            focus:border-sky-200 focus:ring-0.5 focus:ring-sky-200
-                        "
-                        onChange={(e) => {
-                            const value = parseInt(e.target.value)
-                            setSearchCategoryId(value)
-                        }}
-                        value={searchCategoryId}
-                    >
-                        <option value="">Select category</option>
-                        {categories.map(option => (
-                            <option key={option.category_id} value={option.category_id}>
-                                {option.category_name}
-                            </option>
-                        ))}
-                    </select>
-
-                    {/**Filter for select type incomes or expenses */}
-                    <fieldset>
-                        <legend>Select the type:</legend>
-                        <div>
-                            <label htmlFor="income">
-                                <input
-                                    type="radio"
-                                    id="income"
-                                    name="item_type"
-                                    value="incomes"
-                                    checked={searchType === 'incomes'}
-                                    onChange={() => setSearchType('incomes')}
-                                />
-                                <span>Income</span>
-                            </label>
-                            <label htmlFor="expense">
-                                <input
-                                    type="radio"
-                                    id="expense"
-                                    name="item_type"
-                                    value="expenses"
-                                    checked={searchType === 'expenses'}
-                                    onChange={() => setSearchType('expenses')}
-                                />
-                                <span>Expense</span>
-                            </label>
-                        </div>
-                    </fieldset>
-                    {/** Filter for selecting dates */}
-                    <label>Time range</label>
-
-                    <div className="flex gap-3">
-                        <div className="flex flex-col gap-1 w-1/2">
-                            <span className="text-[12px] text-gray-300">From</span>
-                            <input
-                                type="date"
-                                value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
-                                className="border border-neutral-600 rounded-md px-3 py-2 bg-transparent"
-                            />
-                        </div>
-
-                        <div className="flex flex-col gap-1 w-1/2">
-                            <span className="text-[12px] text-gray-300">To</span>
-                            <input
-                                type="date"
-                                value={endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
-                                className="border border-neutral-600 rounded-md px-3 py-2 bg-transparent"
-                            />
-                        </div>
-                    </div>
-
-                </form>
-
-                <p>Selected Category id: {selectedCategoryId}</p> {/** Delete later */}
-
-                {/** List of items */}
-                {filteredItems.length === 0 ? (
-                    <p>No items found. Try to change filters.</p>
-                ) : (
-                    <div className="
-                        w-full
-                        flex flex-col gap-12 justify-center
-                        my-[35px]
-                        px-[30px]
-                        lg:flex-row"
-                    >
-                        
-                        <div className="
-                            border border-stone-700 rounded-md
-                            px-[40px] py-[35px]
-                            flex flex-col gap-5"
-                        >
-                            <h2 className="text-[20px]">Items</h2>
-                            <ul>
-                                {filteredItems.map((item, index) => (
-                                    <li className="
-                                        cursor-pointer
-                                        py-[8px]
-                                        text-[15px]"
-                                        key={index}
-                                        onMouseEnter={() => setSelectedItem({ id: item.id, type: item.type })}
-                                        onMouseLeave={() => { }}
-                                    >
-                                        {item.amount}€, {item.description}, {item.type}, {item.category_id}
-
-                                        {/** Delete and update buttons for items */}
-                                        {selectedItem.id === item.id && selectedItem.type === item.type && (
-                                            <div className="
-                                                        py-[8px]
-                                                        flex flex-row gap-5
-                                                        "
-                                            >
-                                                <button
-                                                    className="
-                                                                cursor-pointer
-                                                                transition
-                                                                hover:text-sky-300
-                                                            "
-                                                    onClick={() => {
-                                                        setSelectedItem({ id: item.id, type: item.type })  // is this necessary as it's already stated
-                                                        setShowPopup(true)
-                                                        setPopupState('delete')
-                                                    }}
-                                                >Delete</button>
-
-                                                <button
-                                                    className="
-                                                                cursor-pointer
-                                                                transition
-                                                                hover:text-sky-300
-                                                            "
-                                                    onClick={() => {
-                                                        setSelectedItem({ id: item.id, type: item.type })
-                                                        setShowPopup(true)
-                                                        setPopupState('update')
-                                                        setItemAmount(String(item.amount))
-                                                        setItemDescription(item.description)
-                                                        setUpdateCategoryId(item.category_id)
-                                                    }}
-                                                >Update</button>
-                                            </div>
-                                        )}
-                                    </li>
-                                ))}
-                            </ul>
-                            <p>
-                                Total amount of selected items: {totalAmount} €
-                            </p>
-                        </div>
-                    </div>
-                )}
-
-            </div>
-
-
-
-
+            <Filters
+                categories={categories}
+                searchCategoryId={searchCategoryId}
+                setSearchCategoryId={setSearchCategoryId}
+                searchType={searchType}
+                setSearchType={setSearchType}
+                startDate={startDate}
+                setStartDate={setStartDate}
+                endDate={endDate}
+                setEndDate={setEndDate}
+            />
+            {/** Listing filtered elements */}
+            <Listing
+                filteredItems={filteredItems}
+                totalAmount={totalAmount}
+                selectedItem={selectedItem}
+                setSelectedItem={setSelectedItem}
+                onRequestDelete={(item) => {
+                    setSelectedItem({ id: item.id, type: item.type })
+                    setShowPopup(true)
+                    setPopupState('delete')
+                }}
+                onRequestUpdate={(item) => {
+                    setSelectedItem({ id: item.id, type: item.type })
+                    setShowPopup(true)
+                    setPopupState('update')
+                    setItemAmount(String(item.amount))
+                    setItemDescription(item.description)
+                    setUpdateCategoryId(item.category_id)
+                }}
+            />
+        
             {/** Create items forms */}
 
             <div className="
@@ -390,9 +262,12 @@ export default function Home() {
                             setSelectedCategoryId(value)
                         }}
                         categoryId={selectedCategoryId}
-                        categoriesList={categories} />
+                        categoriesList={categories}
+                        createCategory={(e) => {
+                            setShowPopup(true)
+                            setPopupState('createCategory')
+                        }} />
                 </div>
-
             </div>
 
 
@@ -523,11 +398,54 @@ export default function Home() {
                     </div>
                 )
             }
+            {/** Create category Popup */}
+            {
+                showPopup && popupState === 'createCategory' && (
+
+                    <div className="fixed inset-0 z-50 flex items-center justify-center">
+                        {/** Darker background */}
+                        <div
+                            className="absolute inset-0 bg-black/70"
+                            onClick={() => {
+                                setShowPopup(false)
+                                setSelectedItem({ id: null, type: null })
+                                setItemAmount('')
+                                setItemDescription('')
+                            }}
+                        ></div>
+                        <div
+                            role="dialog"
+                            aria-modal="true"
+                            className="
+                                    relative z-10 bg-stone-800
+                                    border border-sky-300 rounded-md
+                                    w-[92vw] max-w-[360px] md:max-w-[520px] lg:max-w-[640px]
+                                    max-h-[85vh] overflow-y-auto
+                                    p-6 md:p-7 lg:p-8 shadow-lg
+                                "
+                        >
+                            <p className="text-[16px] md:text-[18px] w-full text-center">Add a new category</p>
+                            <div className="mt-6 flex justify-center gap-5">
+                                <form onSubmit={createNewCategory}>
+                                    <label>New category</label>
+                                    <input
+                                        type="text"
+                                        id="createCategory"
+                                        placeholder="Category name"
+                                        value={newCategory}
+                                        onChange={(e) => setNewCategory(e.target.value)}
+                                    ></input>
+                                    <button type='submit'>Create a new category</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
         </div >
     )
 }
-// 454 lines
-// 509 lines
+// 585 lines
 
 
 
