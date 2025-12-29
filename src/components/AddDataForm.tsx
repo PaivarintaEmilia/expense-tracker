@@ -114,6 +114,7 @@ export default function AddDataForm({ onSubmit, amountOnChange, descriptionOnCha
             {/** Trigger new category Popup */}
             <button
                 onClick={createCategory}
+                className="cursor-pointer"
             >
             Create new category</button>
 

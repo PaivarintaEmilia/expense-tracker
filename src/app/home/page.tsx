@@ -5,10 +5,13 @@ import { getCategories, createCategories } from '@lib/categories'
 //import session from '@hooks/session'
 import AddDataForm from '@components/AddDataForm'
 import supabase from '@/lib/supabase'
-import UpdateDataForm from '@components/UpdateDataForm'
 import { useRouter } from 'next/navigation'
 import Filters from '@/components/Filters'
 import Listing from '@/components/Listing'
+// imports for popup-items
+import DeleteItemModal from '@components/modals/DeleteItemModal'
+import UpdateItemModal from '@components/modals/UpdateItemModal'
+import CreateCategoryModal from '@components/modals/CreateCategoryModal'
 
 
 /* Types */
@@ -70,6 +73,14 @@ export default function Home() {
     /** State to tell if Popup should show Delete- or Update-functionality */
     const [popupState, setPopupState] = useState<'delete' | 'update' | 'createCategory' | null>(null);
 
+    /** Closing the popup-items */
+    const closePopup = () => {
+        setShowPopup(false)
+        setPopupState(null)
+        setSelectedItem({ id: null, type: null })
+        setItemAmount('')
+        setItemDescription('')
+    }
 
     /* Test for getting all the items for listing*/
 
@@ -239,7 +250,7 @@ export default function Home() {
                     setUpdateCategoryId(item.category_id)
                 }}
             />
-        
+
             {/** Create items forms */}
 
             <div className="
@@ -270,178 +281,55 @@ export default function Home() {
                 </div>
             </div>
 
+            {/* Delete item popup*/}
+            <DeleteItemModal
+                open={showPopup && popupState === 'delete' && !!selectedItem.id}
+                selectedItem={selectedItem}
+                onClose={closePopup}
+                onConfirm={async () => {
+                    try {
+                        if (!selectedItem.id || !selectedItem.type) return
+                        await deleteItem(Number(selectedItem.id), String(selectedItem.type))
+                        await allItems()
+                    } finally {
+                        closePopup()
+                    }
+                }}
+            />
 
-
-
-
-            {/* Popup */}
-
-            {/* When showPopup is true and selectedId is set --> show the popup*/}
-            {
-                showPopup && selectedItem && popupState === 'delete' && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center">
-                        {/** Background of the page while Popup (is covering popup at the moment) */}
-                        <div
-                            className="absolute inset-0 bg-black/70"
-                            onClick={() => {
-                                setShowPopup(false)
-                                setSelectedItem({ id: null, type: null })
-                            }}
-                        ></div>
-
-                        {/** Popup card delete */}
-                        <div
-                            role="dialog"
-                            aria-modal="true"
-                            className="
-                                relative z-10 bg-stone-800
-                                border border-sky-300 rounded-md
-                                w-[92vw] max-w-[360px] md:max-w-[520px] lg:max-w-[640px]
-                                max-h-[85vh] overflow-y-auto
-                                p-6 md:p-7 lg:p-8 shadow-lg
-                            "
-                        >
-                            <p className="text-[16px] md:text-[18px] w-full text-center">Do you want to delete the item {selectedItem.id}?</p>
-                            <div className="mt-6 flex justify-center gap-5">
-                                <button
-                                    className="             
-                                        inline-flex items-center
-                                        text-[18px] font-normal
-                                        mt-2
-                                        cursor-pointer
-                                    "
-                                    onClick={async () => {
-                                        await deleteItem(Number(selectedItem.id), String(selectedItem.type))
-                                        allItems() // Is this needed. Is the page reloaded after deletion?
-                                        console.log('Item deleted.')
-                                        setShowPopup(false)
-                                        setSelectedItem({ id: null, type: null })
-                                    }}
-                                >Yes</button>
-                                <button
-                                    className="
-                                        mt-2
-                                        inline-flex items-center justify-center
-                                        rounded-md
-                                        border border-sky-300
-                                        px-4 py-2
-                                        text-[15px] font-bold
-                                        text-white-900
-                                        transition
-                                        hover:bg-stone-700 hover:shadow 
-                                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200
-                                        active:translate-y-[1px]
-                                        disabled:opacity-50 disabled:cursor-not-allowed
-                                        cursor-pointer
-                                    "
-                                    onClick={() => {
-                                        setShowPopup(false)
-                                        setSelectedItem({ id: null, type: null })
-                                    }}
-                                >Cancel</button>
-                            </div>
-
-
-                        </div>
-
-                    </div>
-
-                )
-            }
             {/** Update item popup */}
-            {
-                showPopup && selectedItem.id && popupState === 'update' && (
-
-                    <div className="fixed inset-0 z-50 flex items-center justify-center">
-                        {/** Darker background */}
-                        <div
-                            className="absolute inset-0 bg-black/70"
-                            onClick={() => {
-                                setShowPopup(false)
-                                setSelectedItem({ id: null, type: null })
-                                setItemAmount('')
-                                setItemDescription('')
-                            }}
-                        ></div>
-
-                        {/** Popup card for updating items */}
-                        <div
-                            role="dialog"
-                            aria-modal="true"
-                            className="
-                                relative z-10 bg-stone-800
-                                border border-sky-300 rounded-md
-                                w-[92vw] max-w-[360px] md:max-w-[520px] lg:max-w-[640px]
-                                max-h-[85vh] overflow-y-auto
-                                p-6 md:p-7 lg:p-8 shadow-lg
-                            "
-                        >
-                            <UpdateDataForm
-                                onSubmit={updateItemF}
-                                amountOnChange={(e) => setItemAmount(e.target.value)}
-                                descriptionOnChange={(e) => setItemDescription(e.target.value)}
-                                cancelFunction={() => {
-                                    setShowPopup(false)
-                                    setSelectedItem({ id: null, type: null })
-                                    setPopupState(null)
-                                }}
-                                amount={Number(itemAmount)}
-                                description={itemDescription}
-                                categoryOnChange={(e) => {
-                                    const value = parseInt(e.target.value)
-                                    setUpdateCategoryId(value)
-                                }}
-                                categoryId={updateCategoryId}
-                                categoriesList={categories}>
-                            </UpdateDataForm>
-                        </div>
-                    </div>
-                )
-            }
+            <UpdateItemModal
+                open={showPopup && popupState === 'update' && !!selectedItem.id}
+                onClose={() => {
+                    setShowPopup(false)
+                    setSelectedItem({ id: null, type: null })
+                    setPopupState(null)
+                }}
+                onSubmit={updateItemF}
+                amount={Number(itemAmount)}
+                description={itemDescription}
+                amountOnChange={(e) => setItemAmount(e.target.value)}
+                descriptionOnChange={(e) => setItemDescription(e.target.value)}
+                categoryId={updateCategoryId}
+                categoryOnChange={(e) => setUpdateCategoryId(parseInt(e.target.value))}
+                categoriesList={categories}
+            />
             {/** Create category Popup */}
-            {
-                showPopup && popupState === 'createCategory' && (
-
-                    <div className="fixed inset-0 z-50 flex items-center justify-center">
-                        {/** Darker background */}
-                        <div
-                            className="absolute inset-0 bg-black/70"
-                            onClick={() => {
-                                setShowPopup(false)
-                                setSelectedItem({ id: null, type: null })
-                                setItemAmount('')
-                                setItemDescription('')
-                            }}
-                        ></div>
-                        <div
-                            role="dialog"
-                            aria-modal="true"
-                            className="
-                                    relative z-10 bg-stone-800
-                                    border border-sky-300 rounded-md
-                                    w-[92vw] max-w-[360px] md:max-w-[520px] lg:max-w-[640px]
-                                    max-h-[85vh] overflow-y-auto
-                                    p-6 md:p-7 lg:p-8 shadow-lg
-                                "
-                        >
-                            <p className="text-[16px] md:text-[18px] w-full text-center">Add a new category</p>
-                            <div className="mt-6 flex justify-center gap-5">
-                                <form onSubmit={createNewCategory}>
-                                    <label>New category</label>
-                                    <input
-                                        type="text"
-                                        id="createCategory"
-                                        placeholder="Category name"
-                                        value={newCategory}
-                                        onChange={(e) => setNewCategory(e.target.value)}
-                                    ></input>
-                                    <button type='submit'>Create a new category</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                )
-            }
+            <CreateCategoryModal
+                open={showPopup && popupState === 'createCategory'}
+                onClose={closePopup}
+                newCategory={newCategory}
+                setNewCategory={setNewCategory}
+                onSubmit={async (e) => {
+                    try {
+                        await createNewCategory(e)
+                        await refreshCategoriesList()
+                        setNewCategory('')
+                    } finally {
+                        closePopup()
+                    }
+                }}
+            />
         </div >
     )
 }
