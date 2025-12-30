@@ -1,14 +1,14 @@
-'use client';
-import React from 'react';
-import Modal from './Modal';
+'use client'
+import React from 'react'
+import Modal from './Modal'
 
 type CreateCategoryModalProps = {
-    open: boolean;
-    onClose: () => void;
-    newCategory: string;
-    setNewCategory: React.Dispatch<React.SetStateAction<string>>;
-    onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-};
+    open: boolean
+    onClose: () => void
+    newCategory: string
+    setNewCategory: React.Dispatch<React.SetStateAction<string>>
+    onSubmit: (e: React.FormEvent<HTMLFormElement>) => void
+}
 
 export default function CreateCategoryModal({
     open,
@@ -26,7 +26,7 @@ export default function CreateCategoryModal({
             <div className='mt-6 flex justify-center gap-5'>
                 <form
                     onSubmit={(e) => {
-                        onSubmit(e);
+                        onSubmit(e)
                         // halutessasi: setNewCategory('') tässä tai page.tsx:ssä
                     }}
                 >
@@ -84,5 +84,5 @@ export default function CreateCategoryModal({
                 </form>
             </div>
         </Modal>
-    );
+    )
 }

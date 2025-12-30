@@ -1,43 +1,43 @@
-'use client';
-import React, { useEffect, useState } from 'react';
-import supabase from '@lib/supabase';
-import { useRouter } from 'next/navigation';
+'use client'
+import React, { useEffect, useState } from 'react'
+import supabase from '@lib/supabase'
+import { useRouter } from 'next/navigation'
 
 export default function Login() {
-    const router = useRouter();
+    const router = useRouter()
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
-            if (session) router.replace('/home');
-        });
-    }, [router]);
+            if (session) router.replace('/home')
+        })
+    }, [router])
 
-    const [email, setEmail] = useState('');
-    const [error, setError] = useState<string | null>(null);
-    let successMessage = '';
+    const [email, setEmail] = useState('')
+    const [error, setError] = useState<string | null>(null)
+    let successMessage = ''
 
     const handleEmailRegistration = async (e: React.FormEvent) => {
-        e.preventDefault();
+        e.preventDefault()
 
-        console.log('Email:', email);
+        console.log('Email:', email)
 
         try {
             const { data, error } = await supabase.auth.signInWithOtp({
                 email: email,
-            });
-            console.log('Data34444:', data);
+            })
+            console.log('Data34444:', data)
 
             if (error) {
-                setError(error.message);
+                setError(error.message)
             } else {
-                console.log('Registration successful:', data);
-                successMessage = 'Magic Link has been sent to your email!';
+                console.log('Registration successful:', data)
+                successMessage = 'Magic Link has been sent to your email!'
             }
         } catch (error) {
-            console.log('Error during registration: ', error);
-            setError('There was a error during the registration.');
+            console.log('Error during registration: ', error)
+            setError('There was a error during the registration.')
         }
-    };
+    }
 
     return (
         <div className='min-h-screen flex items-center justify-center px-4'>
@@ -124,5 +124,5 @@ export default function Login() {
                 </h2>
             </div>
         </div>
-    );
+    )
 }

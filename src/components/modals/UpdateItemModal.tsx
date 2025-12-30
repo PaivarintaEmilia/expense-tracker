@@ -1,25 +1,25 @@
-'use client';
-import React from 'react';
-import Modal from './Modal';
-import UpdateDataForm from '@components/UpdateDataForm';
+'use client'
+import React from 'react'
+import Modal from './Modal'
+import UpdateDataForm from '@components/UpdateDataForm'
 
-type Categories = { category_id: number; category_name: string };
+type Categories = { category_id: number; category_name: string }
 
 type UpdateItemModalProps = {
-    open: boolean;
-    onClose: () => void;
+    open: boolean
+    onClose: () => void
 
-    onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-    amount: number;
-    description: string;
+    onSubmit: (e: React.FormEvent<HTMLFormElement>) => void
+    amount: number
+    description: string
 
-    amountOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    descriptionOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    amountOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+    descriptionOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 
-    categoryId: number | '';
-    categoryOnChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-    categoriesList: Categories[];
-};
+    categoryId: number | ''
+    categoryOnChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
+    categoriesList: Categories[]
+}
 
 export default function UpdateItemModal({
     open,
@@ -47,5 +47,5 @@ export default function UpdateItemModal({
                 categoriesList={categoriesList}
             />
         </Modal>
-    );
+    )
 }

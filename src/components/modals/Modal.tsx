@@ -1,14 +1,14 @@
-'use client';
-import React from 'react';
+'use client'
+import React from 'react'
 
 type ModalProps = {
-    open: boolean;
-    onClose: () => void;
-    children: React.ReactNode;
-};
+    open: boolean
+    onClose: () => void
+    children: React.ReactNode
+}
 
 export default function Modal({ open, onClose, children }: ModalProps) {
-    if (!open) return null;
+    if (!open) return null
 
     return (
         <div className='fixed inset-0 z-50 flex items-center justify-center'>
@@ -30,5 +30,5 @@ export default function Modal({ open, onClose, children }: ModalProps) {
                 {children}
             </div>
         </div>
-    );
+    )
 }

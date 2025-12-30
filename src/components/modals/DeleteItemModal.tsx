@@ -1,16 +1,16 @@
-'use client';
-import React from 'react';
-import Modal from './Modal';
+'use client'
+import React from 'react'
+import Modal from './Modal'
 
-type ItemType = 'incomes' | 'expenses';
-type SelectedItem = { id: string | null; type: ItemType | null };
+type ItemType = 'incomes' | 'expenses'
+type SelectedItem = { id: string | null; type: ItemType | null }
 
 type DeleteItemModalProps = {
-    open: boolean;
-    selectedItem: SelectedItem;
-    onClose: () => void;
-    onConfirm: () => Promise<void>;
-};
+    open: boolean
+    selectedItem: SelectedItem
+    onClose: () => void
+    onConfirm: () => Promise<void>
+}
 
 export default function DeleteItemModal({
     open,
@@ -60,5 +60,5 @@ export default function DeleteItemModal({
                 </button>
             </div>
         </Modal>
-    );
+    )
 }

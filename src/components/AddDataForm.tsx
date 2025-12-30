@@ -1,18 +1,16 @@
-import { Categories } from '@lib/types/db';
+import { Categories } from '@lib/types/db'
 
 type IncomeData = {
-    onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-    amountOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    descriptionOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    selectedCategoryOnChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-    createCategory: (
-        e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    ) => void;
-    amount: string;
-    description: string;
-    categoryId: number | '';
-    categoriesList: Categories[];
-};
+    onSubmit: (e: React.FormEvent<HTMLFormElement>) => void
+    amountOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+    descriptionOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+    selectedCategoryOnChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
+    createCategory: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
+    amount: string
+    description: string
+    categoryId: number | ''
+    categoriesList: Categories[]
+}
 
 export default function AddDataForm({
     onSubmit,
@@ -160,5 +158,5 @@ export default function AddDataForm({
                 Create
             </button>
         </form>
-    );
+    )
 }

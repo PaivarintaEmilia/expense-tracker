@@ -1,36 +1,36 @@
-'use client';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import supabase from '@lib/supabase';
-import { useRouter } from 'next/navigation';
+'use client'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import supabase from '@lib/supabase'
+import { useRouter } from 'next/navigation'
 
 export default function Header() {
     // User logout-functionality
-    const router = useRouter();
+    const router = useRouter()
 
     async function signOut() {
-        const { error } = await supabase.auth.signOut();
+        const { error } = await supabase.auth.signOut()
         if (error) {
-            console.error(error.message);
-            return;
+            console.error(error.message)
+            return
         }
-        console.log(`User signed out`);
-        router.replace('/authentication');
+        console.log(`User signed out`)
+        router.replace('/authentication')
     }
 
-    const [loggedIn, setLoggedIn] = useState(false);
+    const [loggedIn, setLoggedIn] = useState(false)
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
-            setLoggedIn(!!session); // Changes the session-olio to boolean (if exists session = true)
-        });
+            setLoggedIn(!!session) // Changes the session-olio to boolean (if exists session = true)
+        })
 
         const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
-            setLoggedIn(!!session);
-        });
+            setLoggedIn(!!session)
+        })
 
-        return () => sub.subscription.unsubscribe();
-    }, []);
+        return () => sub.subscription.unsubscribe()
+    }, [])
 
     return (
         <div className='mt-[10px] px-[10px]'>
@@ -68,5 +68,5 @@ export default function Header() {
                 )}
             </nav>
         </div>
-    );
+    )
 }

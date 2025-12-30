@@ -1,46 +1,46 @@
-'use client';
-import { useEffect } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import supabase from '@/lib/supabase';
+'use client'
+import { useEffect } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
+import supabase from '@/lib/supabase'
 
 export default function SessionGuard() {
-    const router = useRouter();
-    const pathname = usePathname();
+    const router = useRouter()
+    const pathname = usePathname()
 
     useEffect(() => {
-        let cancelled = false;
+        let cancelled = false
 
-        console.error('Session called');
+        console.error('Session called')
 
         const checkAuth = async () => {
             const {
                 data: { session },
                 error,
-            } = await supabase.auth.getSession();
+            } = await supabase.auth.getSession()
 
             if (error) {
-                console.error('Error checking session:', error.message);
-                return;
+                console.error('Error checking session:', error.message)
+                return
             }
 
             if (!cancelled) {
                 if (!session && pathname !== '/authentication') {
-                    router.replace('/authentication');
+                    router.replace('/authentication')
                 } else {
                     console.log(
                         'User with this email has logged in:',
                         session?.user.email,
-                    );
+                    )
                 }
             }
-        };
+        }
 
-        checkAuth();
+        checkAuth()
 
         return () => {
-            cancelled = true;
-        };
-    }, [router, pathname]);
+            cancelled = true
+        }
+    }, [router, pathname])
 
-    return null;
+    return null
 }

@@ -1,28 +1,28 @@
-type ItemType = 'incomes' | 'expenses';
+type ItemType = 'incomes' | 'expenses'
 
 export type ListingItem = {
-    id: string;
-    amount: number;
-    description: string;
-    type: ItemType;
-    category_id: number;
-};
+    id: string
+    amount: number
+    description: string
+    type: ItemType
+    category_id: number
+}
 
 type SelectedItem = {
-    id: string | null;
-    type: ItemType | null;
-};
+    id: string | null
+    type: ItemType | null
+}
 
 type ListingProps = {
-    filteredItems: ListingItem[];
-    totalAmount: number;
+    filteredItems: ListingItem[]
+    totalAmount: number
 
-    selectedItem: SelectedItem;
-    setSelectedItem: React.Dispatch<React.SetStateAction<SelectedItem>>;
+    selectedItem: SelectedItem
+    setSelectedItem: React.Dispatch<React.SetStateAction<SelectedItem>>
 
-    onRequestDelete: (item: ListingItem) => void;
-    onRequestUpdate: (item: ListingItem) => void;
-};
+    onRequestDelete: (item: ListingItem) => void
+    onRequestUpdate: (item: ListingItem) => void
+}
 
 export default function Listing({
     filteredItems,
@@ -116,5 +116,5 @@ export default function Listing({
                 </div>
             )}
         </div>
-    );
+    )
 }

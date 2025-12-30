@@ -1,25 +1,22 @@
-import { Categories } from '@lib/types/db';
+import { Categories } from '@lib/types/db'
 
-type SearchType = 'incomes' | 'expenses';
+type SearchType = 'incomes' | 'expenses'
 
 type FiltersProps = {
-    categories: Categories[];
+    categories: Categories[]
 
-    searchCategoryId: number | '';
-    setSearchCategoryId: React.Dispatch<React.SetStateAction<number | ''>>;
+    searchCategoryId: number | ''
+    setSearchCategoryId: React.Dispatch<React.SetStateAction<number | ''>>
 
-    searchType: SearchType;
-    setSearchType: React.Dispatch<React.SetStateAction<SearchType>>;
+    searchType: SearchType
+    setSearchType: React.Dispatch<React.SetStateAction<SearchType>>
 
-    startDate: string;
-    setStartDate: React.Dispatch<React.SetStateAction<string>>;
+    startDate: string
+    setStartDate: React.Dispatch<React.SetStateAction<string>>
 
-    endDate: string;
-    setEndDate: React.Dispatch<React.SetStateAction<string>>;
-
-    // optional, mutta sama tyyli kuin AddDataFormissa (onSubmit prop)
-    onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
-};
+    endDate: string
+    setEndDate: React.Dispatch<React.SetStateAction<string>>
+}
 
 export default function Filters({
     categories,
@@ -31,7 +28,6 @@ export default function Filters({
     setStartDate,
     endDate,
     setEndDate,
-    onSubmit,
 }: FiltersProps) {
     return (
         <div className='w-full flex flex-col justify-center items-center'>
@@ -52,8 +48,8 @@ export default function Filters({
                                 mt-[10px]
                             '
                     onChange={(e) => {
-                        const value = parseInt(e.target.value);
-                        setSearchCategoryId(value);
+                        const value = parseInt(e.target.value)
+                        setSearchCategoryId(value)
                     }}
                     value={searchCategoryId}
                 >
@@ -131,5 +127,5 @@ export default function Filters({
                 </div>
             </form>
         </div>
-    );
+    )
 }
