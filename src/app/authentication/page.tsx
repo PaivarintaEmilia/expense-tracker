@@ -14,7 +14,8 @@ export default function Login() {
 
     const [email, setEmail] = useState('')
     const [error, setError] = useState<string | null>(null)
-    let successMessage = ''
+    const [successMessage, setSuccessMessage] = useState<string | null>(null)
+
 
     const handleEmailRegistration = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -31,7 +32,7 @@ export default function Login() {
                 setError(error.message)
             } else {
                 console.log('Registration successful:', data)
-                successMessage = 'Magic Link has been sent to your email!'
+                setSuccessMessage('Magic Link has been sent to your email!')
             }
         } catch (error) {
             console.log('Error during registration: ', error)

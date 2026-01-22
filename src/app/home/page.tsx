@@ -2,13 +2,11 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { getItems, createItem, updateItem, deleteItem } from '@/lib/item'
 import { getCategories, createCategories } from '@lib/categories'
-//import session from '@hooks/session'
 import AddDataForm from '@components/AddDataForm'
 import supabase from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import Filters from '@/components/Filters'
 import Listing from '@/components/Listing'
-// imports for popup-items
 import DeleteItemModal from '@components/modals/DeleteItemModal'
 import UpdateItemModal from '@components/modals/UpdateItemModal'
 import CreateCategoryModal from '@components/modals/CreateCategoryModal'
@@ -67,7 +65,6 @@ export default function Home() {
     const [newCategory, setNewCategory] = useState<string>('')
 
     /* UseStates for deletion/update-functionalities*/
-    // This might not be useful: const [hoveredId, setHoveredId] = useState<string | null>(null)
     const [showPopup, setShowPopup] = useState<boolean>(false) // To activate and deactivate the popUp
     const [selectedItem, setSelectedItem] = useState<{
         id: string | null
@@ -89,7 +86,6 @@ export default function Home() {
     }
 
     /* Test for getting all the items for listing*/
-
     const allItems = async () => {
         const allitems = await getItems()
         console.log(
@@ -143,13 +139,6 @@ export default function Home() {
         const user = await getUserId()
         const userId = user?.id
 
-        console.log('Create item userID', userId)
-        console.log('Create item amount', newAmount)
-        console.log('Create item date', date)
-        console.log('Create item desc', newDescription)
-        console.log('Create item category id', selectedCategoryId)
-        console.log('Create item type', type)
-
         await createItem(
             userId,
             Number(newAmount),
@@ -159,7 +148,7 @@ export default function Home() {
             String(type),
         )
 
-        allItems()
+        await allItems()
         setNewAmount('')
         setNewDescription('')
         setSelectedCategoryId('')
@@ -179,7 +168,7 @@ export default function Home() {
             String(selectedItem.type),
         )
 
-        allItems()
+        await allItems()
 
         setSelectedItem({ id: null, type: null })
         setItemAmount('')
@@ -368,4 +357,4 @@ export default function Home() {
         </div>
     )
 }
-// 585 lines
+
