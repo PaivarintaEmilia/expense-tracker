@@ -1,6 +1,8 @@
 # Expense Tracker
 
-Expense Tracker is a Next.js + TypeScript web app for tracking incomes and expenses. The app uses Supabase for authentication and data access and provides a simple UI to create, browse, filter, update and delete transactions.
+The application is built with React, Next.js, and TypeScript. I have also used Tailwind CSS for styling, Supabase for authentication and database, and Prettier for code formatting.  The application is deployed on Vercel and uses environment variables for configuration. I designed and implemented the database structure, used Row Level Security (RLS) to control access to data, and built authentication and authorization flows. 
+
+To protect the endpoints RLS is used
 
 ## Tech stack / Tools
 
