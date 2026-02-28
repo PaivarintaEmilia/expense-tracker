@@ -21,7 +21,7 @@ export const getItems = async () => {
         id: i.id as string,
         created_at: i.created_at as number,
         category_id: i.category_id as number,
-        user_id: i.user_id as number,
+        user_id: i.user_id as string,
         type: 'incomes' as const,
     }))
 
@@ -31,7 +31,7 @@ export const getItems = async () => {
         id: i.id as string,
         created_at: i.created_at as number,
         category_id: i.category_id as number,
-        user_id: i.user_id as number,
+        user_id: i.user_id as string,
         type: 'expenses' as const,
     }))
 

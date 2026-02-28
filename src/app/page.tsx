@@ -1,6 +1,7 @@
 // app/page.tsx (server component)
 import { redirect } from 'next/navigation'
 import supabase from '@lib/supabase'
+import HomeClient from './HomeClient'
 
 export default async function Root() {
     const {
@@ -12,4 +13,6 @@ export default async function Root() {
     } else {
         redirect('/authentication')
     }
+
+    return <HomeClient />
 }

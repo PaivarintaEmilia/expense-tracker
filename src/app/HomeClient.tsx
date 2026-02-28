@@ -27,7 +27,7 @@ type Categories = {
     category_name: string
 }
 
-export default function Home() {
+export default function HomeClient() {
     // Redirecting based onif the user is logged in or not
     const router = useRouter()
 

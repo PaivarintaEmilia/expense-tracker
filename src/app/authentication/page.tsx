@@ -13,6 +13,7 @@ export default function Login() {
     }, [router])
 
     const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
     const [error, setError] = useState<string | null>(null)
     const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
@@ -23,16 +24,22 @@ export default function Login() {
         console.log('Email:', email)
 
         try {
-            const { data, error } = await supabase.auth.signInWithOtp({
+            //const { data, error } = await supabase.auth.signInWithOtp({
+            //  email: email,
+            //})
+
+
+            let { data, error } = await supabase.auth.signInWithPassword({
                 email: email,
+                password: password,
             })
-            console.log('Data34444:', data)
+
 
             if (error) {
                 setError(error.message)
             } else {
                 console.log('Registration successful:', data)
-                setSuccessMessage('Magic Link has been sent to your email!')
+                router.replace('/home')
             }
         } catch (error) {
             console.log('Error during registration: ', error)
@@ -48,16 +55,16 @@ export default function Login() {
                 className='
                     flex flex-col items-center justify-center gap-6
                     w-full max-w-sm
-                    md:max-w-[380px] md:h.[520px]
-                    lg:max-w-[400px] lg:h-[550px]
-                    rounded-[15px] border-2 border-white-700
-                    shadow-sm
-                    p-6 md:p-7 lg:p-8
-                    bg-white-800
+                    md:max-w-[380px] md:h-[520px]
+                    lg:max-w-100 lg:h-[550px]
+                    rounded-[15px]
+                    border border-t-gray-400 border-l-gray-400 border-r-gray-200 border-b-gray-200
+                    p-15 md:p-7 lg:p-8
+                    backdrop-blur-md
                 '
             >
                 <h1 className='text-[23px] font-medium leading-snug text-white-900 w-full text-center'>
-                    Create an account or login with Magic Link
+                    Muuta loginiksi! Tämä tulee muuttaa ennen push
                 </h1>
 
                 <form
@@ -74,6 +81,30 @@ export default function Login() {
                         placeholder='email@'
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        required
+                        className='
+                            w-full
+                            rounded-md
+                            border border-neutral-600
+                            px-3 py-2
+                            text-base
+                            outline-none
+                            transition
+                            hover:border-gray-400
+                            focus:border-sky-600 focus:ring-2 focus:ring-sky-200
+                            placeholder:text-gray-400 font-light
+                        '
+                    />
+                    <label
+                        htmlFor='password'
+                        className='text-[18] font-light text-white-800'
+                    ></label>
+                    <input
+                        type='password'
+                        id='password'
+                        placeholder='******'
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         required
                         className='
                             w-full
@@ -107,7 +138,7 @@ export default function Login() {
                         cursor-pointer
                     '
                     >
-                        Send Magic Link
+                        Log in
                     </button>
                 </form>
                 {/* Show error message */}
