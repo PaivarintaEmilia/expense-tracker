@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect, useMemo } from 'react'
-import { getItems, createItem, updateItem, deleteItem } from '@/lib/item'
+import { getItems, createItem, updateItem, deleteItem } from '@/lib/items'
 import { getCategories, createCategories } from '@lib/categories'
 import AddDataForm from '@components/AddDataForm'
 import supabase from '@/lib/supabase'
@@ -28,7 +28,6 @@ type Categories = {
 }
 
 export default function Home() {
-    // Redirecting based onif the user is logged in or not
     const router = useRouter()
 
     useEffect(() => {
@@ -85,18 +84,22 @@ export default function Home() {
         setItemDescription('')
     }
 
-    /* Test for getting all the items for listing*/
-    const allItems = async () => {
-        const allitems = await getItems()
+    /* Get all the data for the listing*/
+    const getAllItems = async () => {
+
+        const user = await getUserId()
+        const userId = user?.id
+
+        const allItems = await getItems(userId)
         console.log(
             'Data when fetching all the items fron items.ts : ',
-            allitems,
+            allItems,
         )
         console.log(
             'Data when fetching all the items first object, type : ',
-            allitems[0].type,
+            allItems[0].type,
         )
-        setTransactionItems(allitems)
+        setTransactionItems(allItems)
     }
 
     /** Get userId */
@@ -122,7 +125,7 @@ export default function Home() {
 
     useEffect(() => {
         refreshCategoriesList()
-        allItems()
+        getAllItems ()
     }, [])
 
     /** Create new item */
@@ -148,7 +151,7 @@ export default function Home() {
             String(type),
         )
 
-        await allItems()
+        await getAllItems ()
         setNewAmount('')
         setNewDescription('')
         setSelectedCategoryId('')
@@ -168,7 +171,7 @@ export default function Home() {
             String(selectedItem.type),
         )
 
-        await allItems()
+        await getAllItems ()
 
         setSelectedItem({ id: null, type: null })
         setItemAmount('')
@@ -312,7 +315,7 @@ export default function Home() {
                             Number(selectedItem.id),
                             String(selectedItem.type),
                         )
-                        await allItems()
+                        await getAllItems ()
                     } finally {
                         closePopup()
                     }

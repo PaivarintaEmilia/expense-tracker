@@ -1,35 +1,40 @@
 import supabase from '@lib/supabase'
 
-// Get Item
-export const getItems = async () => {
-    const [incomesR, expensesR] = await Promise.all([
+// Get items (incomes & expenses)
+export const getItems = async (user_id: string) => {
+    const [incomesData, expensesData] = await Promise.all([
         supabase
             .from(`incomes`)
             .select(
                 'id, amount, description, created_at, category_id, user_id',
-            ),
+            )
+            .eq('user_id', user_id),
         supabase
             .from(`expenses`)
             .select(
                 'id, amount, description, created_at, category_id, user_id',
-            ),
+            )
+            .eq('user_id', user_id),
     ])
 
-    const incomes = (incomesR.data ?? []).map((i) => ({
+    if (incomesData.error) throw incomesData.error
+    if (expensesData.error) throw expensesData.error
+
+    const incomes = (incomesData.data ?? []).map((i) => ({
         amount: i.amount as number,
         description: i.description as string,
         id: i.id as string,
-        created_at: i.created_at as number,
+        created_at: i.created_at as string,
         category_id: i.category_id as number,
         user_id: i.user_id as string,
         type: 'incomes' as const,
     }))
 
-    const expenses = (expensesR.data ?? []).map((i) => ({
+    const expenses = (expensesData.data ?? []).map((i) => ({
         amount: i.amount as number,
         description: i.description as string,
         id: i.id as string,
-        created_at: i.created_at as number,
+        created_at: i.created_at as string,
         category_id: i.category_id as number,
         user_id: i.user_id as string,
         type: 'expenses' as const,
@@ -54,6 +59,7 @@ export const createItem = async (
 
     if (error) {
         console.log(`Insert ${type} error | item.ts: `, error)
+        throw error
     }
 
     return item

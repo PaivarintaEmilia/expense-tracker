@@ -53,6 +53,7 @@ export default function Header() {
                     <a 
                         href='https://github.com/PaivarintaEmilia/expense-tracker'
                         className='text-lg'
+                        target="_blank"
                     >GitHub Repository</a>
                 </div>
 
