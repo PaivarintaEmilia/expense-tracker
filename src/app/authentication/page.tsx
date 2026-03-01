@@ -15,41 +15,30 @@ export default function Login() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState<string | null>(null)
-    const [successMessage, setSuccessMessage] = useState<string | null>(null)
-
 
     const handleEmailRegistration = async (e: React.FormEvent) => {
         e.preventDefault()
 
-        console.log('Email:', email)
-
         try {
-            //const { data, error } = await supabase.auth.signInWithOtp({
-            //  email: email,
-            //})
-
 
             let { data, error } = await supabase.auth.signInWithPassword({
                 email: email,
                 password: password,
             })
 
-
             if (error) {
                 setError(error.message)
             } else {
-                console.log('Registration successful:', data)
                 router.replace('/home')
             }
         } catch (error) {
-            console.log('Error during registration: ', error)
             setError('There was a error during the registration.')
         }
     }
 
     return (
         <div className='min-h-screen flex items-center justify-center px-4'>
-            {/** Sign-in | Registration card */}
+            {/** Sign-in card */}
 
             <div
                 className='
@@ -64,7 +53,7 @@ export default function Login() {
                 '
             >
                 <h1 className='text-[23px] font-medium leading-snug text-white-900 w-full text-center'>
-                    Muuta loginiksi! Tämä tulee muuttaa ennen push
+                    Please log in below. (Use the credentials provided by the creator.)
                 </h1>
 
                 <form
@@ -147,12 +136,6 @@ export default function Login() {
                     aria-live='polite'
                 >
                     {error}
-                </h2>
-                <h2
-                    className='text-[18px] font-light text-lime-400 text-center'
-                    aria-live='polite'
-                >
-                    {successMessage}
                 </h2>
             </div>
         </div>

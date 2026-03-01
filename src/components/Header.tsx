@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import supabase from '@lib/supabase'
 import { useRouter } from 'next/navigation'
 
+
 export default function Header() {
     // User logout-functionality
     const router = useRouter()
@@ -36,12 +37,25 @@ export default function Header() {
         <div className='mt-[10px] px-[10px]'>
             <nav
                 className='
-                    flex flex-row justify-center items-center gap-5
+                    flex flex-row justify-between items-center gap-10
                     border border-stone-700 rounded-md 
                     px-[25px] py-[10px]
-                    lg:justify-end 
+
                 '
             >
+                <div
+                    className='flex flex-row gap-3 items-center'>
+                    <img 
+                        src='/GitHub.svg'
+                        alt='GitHub Icon'
+                        className='size-8'
+                    />                           
+                    <a 
+                        href='https://github.com/PaivarintaEmilia/expense-tracker'
+                        className='text-lg'
+                    >GitHub Repository</a>
+                </div>
+
                 {loggedIn && (
                     <Link
                         href='/authentication'
