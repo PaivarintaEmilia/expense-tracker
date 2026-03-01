@@ -38,7 +38,7 @@ export default function Home() {
 
     // States for filtering data
     const [searchCategoryId, setSearchCategoryId] = useState<number | ''>('') // Categories
-    const [searchType, setSearchType] = useState<'incomes' | 'expenses'>(
+    const [searchType, setSearchType] = useState<'incomes' | 'expenses' | 'all'>(
         'expenses',
     ) // Item types
     const [startDate, setStartDate] = useState<string>('') // Start date
