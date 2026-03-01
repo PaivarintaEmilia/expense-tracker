@@ -228,8 +228,8 @@ export default function Home() {
         <div
             className='
             flex flex-col items-center gap-15
-            ml-[10px] mr-[10px] my-[25px]
-            py-[50px]
+            ml-2.5 mr-2.5 my-6.25
+            py-12.5
             '
         >
             <h1 className='text-[35px]'>Expense Tracker</h1>
@@ -273,7 +273,7 @@ export default function Home() {
                 className='
                     w-full
                     flex flex-col gap-20 justify-center items-center
-                    mb-[100px]
+                    mb-25
                     lg:flex-row
                     '
             >

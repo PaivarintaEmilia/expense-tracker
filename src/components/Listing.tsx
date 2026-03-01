@@ -42,13 +42,13 @@ export default function Listing({
                     className='
                         w-full
                         flex flex-col gap-12 justify-center
-                        px-[30px]
+                        px-7.5
                         lg:flex-row'
                 >
                     <div
                         className='
                             border border-stone-700 rounded-md
-                            px-[40px] py-[35px]
+                            px-10 py-8.75
                             flex flex-col gap-5'
                     >
                         <h2 className='text-[20px]'>Items</h2>
@@ -57,7 +57,7 @@ export default function Listing({
                                 <li
                                     className='
                                         cursor-pointer
-                                        py-[8px]
+                                        py-2
                                         text-[15px]'
                                     key={index}
                                     onMouseEnter={() =>
@@ -75,7 +75,7 @@ export default function Listing({
                                         selectedItem.type === item.type && (
                                             <div
                                                 className='
-                                                        py-[8px]
+                                                        py-2
                                                         flex flex-row gap-5
                                                         '
                                             >

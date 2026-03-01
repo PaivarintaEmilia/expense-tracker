@@ -34,12 +34,12 @@ export default function Header() {
     }, [])
 
     return (
-        <div className='mt-[10px] px-[10px]'>
+        <div className='mt-2.5 px-2.5'>
             <nav
                 className='
                     flex flex-row justify-between items-center gap-10
                     border border-stone-700 rounded-md 
-                    px-[25px] py-[10px]
+                    px-6.25 py-2.5
 
                 '
             >
@@ -68,12 +68,12 @@ export default function Header() {
                         px-4 py-2
                         text-[18px] font-bold
                         text-white-900
-                        mb-[3px]
+                        mb-0.75
                         bg-sky-600
                         transition
                         hover:bg-stone-800 hover:shadow 
                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300
-                        active:translate-y-[1px]
+                        active:translate-y-px
                         disabled:opacity-50 disabled:cursor-not-allowed
                         '
                         onClick={signOut}

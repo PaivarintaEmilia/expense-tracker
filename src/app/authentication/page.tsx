@@ -44,8 +44,8 @@ export default function Login() {
                 className='
                     flex flex-col items-center justify-center gap-6
                     w-full max-w-sm
-                    md:max-w-[380px] md:h-[520px]
-                    lg:max-w-100 lg:h-[550px]
+                    md:max-w-95 md:h-130
+                    lg:max-w-100 lg:h-137.5
                     rounded-[15px]
                     border border-t-gray-400 border-l-gray-400 border-r-gray-200 border-b-gray-200
                     p-15 md:p-7 lg:p-8
@@ -122,7 +122,7 @@ export default function Login() {
                         transition
                         hover:bg-stone-800 hover:shadow 
                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300
-                        active:translate-y-[1px]
+                        active:translate-y-px
                         disabled:opacity-50 disabled:cursor-not-allowed
                         cursor-pointer
                     '
