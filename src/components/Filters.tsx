@@ -1,6 +1,6 @@
 import { Categories } from '@lib/types/db'
 
-type SearchType = 'incomes' | 'expenses'
+type SearchType = 'incomes' | 'expenses' | 'all'
 
 type FiltersProps = {
     categories: Categories[]
@@ -48,13 +48,13 @@ export default function Filters({
                                 mt-2.5
                             '
                     onChange={(e) => {
-                        const value = parseInt(e.target.value)
-                        setSearchCategoryId(value)
+                        const value = e.target.value
+                        setSearchCategoryId(value === '' ? '' : parseInt(value, 10))
                     }}
                     value={searchCategoryId}
                 >
                     <option value='' className='bg-neutral-800 text-white'>
-                        Select category
+                        All categories
                     </option>
                     {categories.map((option) => (
                         <option
@@ -70,11 +70,22 @@ export default function Filters({
                         </option>
                     ))}
                 </select>
-
-                {/**Filter for select type incomes or expenses */}
+                {/**Filter for select type all, incomes or expenses */}
                 <fieldset className='mt-2.5 mb-2.5'>
                     <legend>Select the type:</legend>
                     <div>
+                        <label htmlFor='all'>
+                            <input
+                                type='radio'
+                                id='all'
+                                name='item_type'
+                                value='all'
+                                checked={searchType === 'all'}
+                                onChange={() => setSearchType('all')}
+                                className='w-3 h-3 mr-1.25 mt-2.5 text-neutral-primary border-default-medium bg-neutral-secondary-medium rounded-full checked:bg-blue-500 focus:ring-1 focus:outline-none focus:ring-brand-subtle border border-b-blue-100 appearance-none'
+                            />
+                            <span>All</span>
+                        </label>
                         <label htmlFor='income'>
                             <input
                                 type='radio'
@@ -83,7 +94,7 @@ export default function Filters({
                                 value='incomes'
                                 checked={searchType === 'incomes'}
                                 onChange={() => setSearchType('incomes')}
-                                className='w-3 h-3 mr-1.25 mt-2.5 text-neutral-primary border-default-medium bg-neutral-secondary-medium rounded-full checked:bg-blue-500 focus:ring-1 focus:outline-none focus:ring-brand-subtle border border-b-blue-100 appearance-none'
+                                className='w-3 h-3 mr-1.25 ml-2 text-neutral-primary border-default-medium bg-neutral-secondary-medium rounded-full checked:bg-blue-500 focus:ring-1 focus:outline-none focus:ring-brand-subtle border border-b-blue-100 appearance-none'
                             />
                             <span>Income</span>
                         </label>
@@ -103,7 +114,6 @@ export default function Filters({
                 </fieldset>
                 {/** Filter for selecting dates */}
                 <label>Time range</label>
-
                 <div className='flex gap-3 mt-2.5 mb-2.5'>
                     <div className='flex flex-col gap-1 w-1/2'>
                         <span className='text-[12px] text-gray-300'>From</span>

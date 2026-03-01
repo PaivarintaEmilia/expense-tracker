@@ -40,6 +40,8 @@ export const getItems = async (user_id: string) => {
         type: 'expenses' as const,
     }))
 
+    console.log(expenses[2].created_at)
+
     return [...incomes, ...expenses]
 }
 
