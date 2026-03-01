@@ -39,7 +39,7 @@ export default function Home() {
     // States for filtering data
     const [searchCategoryId, setSearchCategoryId] = useState<number | ''>('') // Categories
     const [searchType, setSearchType] = useState<'incomes' | 'expenses' | 'all'>(
-        'expenses',
+        'all',
     ) // Item types
     const [startDate, setStartDate] = useState<string>('') // Start date
     const [endDate, setEndDate] = useState<string>('') // End date
@@ -125,7 +125,7 @@ export default function Home() {
 
     useEffect(() => {
         refreshCategoriesList()
-        getAllItems ()
+        getAllItems()
     }, [])
 
     /** Create new item */
@@ -151,7 +151,7 @@ export default function Home() {
             String(type),
         )
 
-        await getAllItems ()
+        await getAllItems()
         setNewAmount('')
         setNewDescription('')
         setSelectedCategoryId('')
@@ -171,7 +171,7 @@ export default function Home() {
             String(selectedItem.type),
         )
 
-        await getAllItems ()
+        await getAllItems()
 
         setSelectedItem({ id: null, type: null })
         setItemAmount('')
@@ -181,24 +181,31 @@ export default function Home() {
         setPopupState(null)
     }
 
+    // Create new category
+    const createNewCategory = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        console.log(`CreateNewCategory called`)
+        await createCategories(String(newCategory))
+        setShowPopup(false)
+    }
+
+
     /** Filter the items by selected filters */
 
     const filteredItems = useMemo(() => {
         return transactionItems.filter((item) => {
-            // Category
-            if (
-                typeof searchCategoryId === 'number' &&
-                item.category_id !== searchCategoryId
-            ) {
+            
+            // Filtering based on the selected category            
+            if (searchCategoryId !== '' && item.category_id !== searchCategoryId) {
                 return false
             }
 
-            // Type
-            if (item.type !== searchType) {
+            // Filtering based on the selected type
+            if (searchType !== 'all' && item.type !== searchType) {
                 return false
             }
 
-            // Selected dates
+            // Filtering based on the selected dates
             if (startDate || endDate) {
                 const itemDate = item.created_at
                 if (!itemDate) return false // if date is not readable
@@ -216,13 +223,6 @@ export default function Home() {
         return filteredItems.reduce((sum, item) => sum + item.amount, 0)
     }, [filteredItems])
 
-    // Create new category
-    const createNewCategory = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        console.log(`CreateNewCategory called`)
-        await createCategories(String(newCategory))
-        setShowPopup(false)
-    }
 
     return (
         <div
@@ -315,7 +315,7 @@ export default function Home() {
                             Number(selectedItem.id),
                             String(selectedItem.type),
                         )
-                        await getAllItems ()
+                        await getAllItems()
                     } finally {
                         closePopup()
                     }
