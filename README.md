@@ -1,8 +1,10 @@
 # Expense Tracker
 
-The application is built with React, Next.js, and TypeScript. I have also used Tailwind CSS for styling, Supabase for authentication and database, and Prettier for code formatting.  The application is deployed on Vercel and uses environment variables for configuration. I designed and implemented the database structure, used Row Level Security (RLS) to control access to data, and built authentication and authorization flows. 
+The application is built with React, Next.js, and TypeScript. I have also used Tailwind CSS for styling, Supabase for authentication and database, and Prettier for code formatting.  The application is deployed on [Vercel](https://expense-tracker-sigma-six-90.vercel.app/authentication) and uses environment variables for configuration. I designed and implemented the database structure, used Row Level Security (RLS) to control access to data, and built authentication and authorization flows. 
 
-To protect the endpoints RLS is used
+I have created this full-stack solution from start to finish. I had to make careful decisions about how data should flow between the front end and the database, how to structure the data model to support filtering and updates, and how to set up authentication and RLS so each user can only access their own data. I also realized how important it is to plan early: thinking through user use cases helped me define what features mattered most and design the app from the user’s perspective.
+
+If you haven't received the email and password for login, please contact the creator. 
 
 ## Tech stack / Tools
 
